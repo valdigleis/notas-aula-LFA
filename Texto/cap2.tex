@@ -1,0 +1,292 @@
+\chapter{Autômatos Finitos e suas Linguagens}\label{cap:Automata}
+
+\epigraph{``Eu acredito que às vezes são as pessoas que ninguém espera nada que fazem as coisas que ninguém consegue imaginar. ''}{Alan M. Turing.}
+
+Como explicado em diversas obras tais como \cite{benjaLivro2010, hopcroft2008, linz2006, menezes1998LFA}, os autômatos finitos podem ser separados em dois tipos bem definidos, a saber, Autômato Finito Determinístico (AFD) e Autômato Finito Não-determinístico (AFN).
+
+\section{Autômato Finito Determinístico}\label{subsec:AFD}
+
+Agora este documento inicia o estudo dos AFD apresentando sua forma algébrica equacional.
+
+\begin{definicao}[Autômato Finito Determinístico]\label{def:AFD}
+	Um AFD é uma estrutura $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ onde: $Q$ é um conjunto finito de estados, $\Sigma$ é um alfabeto, $\delta : Q \times \Sigma \rightarrow Q$ é uma função total (chamada função de transição), $q_0 \in Q$ é um estado destacado (chamado estado inicial) e $F \subseteq Q$ é o conjunto de estados finais\footnote{Em algumas referências também é usado o termo conjunto de estados de aceitação \cite{de2010}.}.
+\end{definicao}
+
+\begin{exemplo}\label{exe:AFD}
+	A estrutura $A = \langle \{q_0, q_1\}, \{a\}, \delta, q_0, \{q_1\} \rangle$ onde a função de transição é definida por: $\delta(q_0, a) = q_1$ e $\delta(q_1, a) = q_0$, é um AFD.
+\end{exemplo}
+
+
+\begin{exemplo}\label{exe:NaoEAFD}
+	A estrutura $B = \langle \{q_0, q_1, q_2\}, \{a, b\}, \delta, q_0, \{q_0\} \rangle$ onde a função de transição é definida por:
+	\begin{table*}[H]
+		\centering
+		\begin{tabular}{ccc}
+			$\delta(q_0, a) = q_1$ & $\delta(q_1, a) = q_2$ & $\delta(q_2, a) = q_1$\\
+			$\delta(q_0, b) = q_1$ & $\delta(q_1, b) = q_2$ & 
+		\end{tabular}
+	\end{table*}
+
+	\noindent não é um AFD, pois $\delta(q_2, b)$ não está definido, e portanto, $\delta$ não é uma função total furando assim a definição de AFD.
+\end{exemplo}
+
+Não é um fato claro por que usamos a letra $Q$ para representar o conjunto de estados, e a letra minúscula $q$ para simbolizar a um estado genérico, mas isso agora é o padrão notacional firmemente estabelecido nas principais obras da área \cite{benjaLivro2010,hopcroft2008,linz2006}. 
+
+Embora o estudo formal dos autômatos finitos tenha começado muito antes, sua formulação moderna foi estabelecida pelo artigo\footnote{Esse artigo levou Michael Rabin e Dana Scoot a ganharem o Prêmio Turing.} do ano de 1959 escrito por Michael Rabin e Dana Scott \cite{rabin1959}. Em tal artigo Rabin e Scott chamaram o conjunto de estados de $S$, usaram a letra minúscula $s$ para um estado genérico e chamaram o estado inicial de $s_0$. 
+
+Por outro lado, no artigo de 1936, que é o trabalho seminal da teoria da computação, Turing usou $q_1, q_2, \cdots, q_R$ para se referir aos estados (ou ``m-configurações'') de uma máquina de Turing genérica, não existe uma evidência forte que explique o motivo da escolha do $q$. Então o leitor não deve se preocupa se hora esse texto usar $q$ e depois $s$ para representar os estados, pois isso é apenas um conceito de notação e estética textual.
+
+\begin{atencao}
+  As siglas AFD e AFN serão usado tanto para designar o singular quanto o plural, ficando a distinção a critério das sentenças envolvendo tais singlas.
+\end{atencao}
+
+A função de transição $(\delta)$ pode ser interpretada semanticamente como sendo o programa que o autômato executa, assim uma aplicação qualquer de $\delta$ é uma instrução do programa do autômato, por exemplo, a aplicação $\delta(q, x) = p$ significa que, o AFD muda do estado atual $q$ para o estado $p$ quando o mecanismo de leitura lê o símbolo $x$ na memória. 
+
+Uma representação comum para os AFD é baseada no uso de grafos de transição \cite{valdi2020phd}. Em um grafo de transição os vértices irão ser representados por círculos, que neste caso são usados para representar os estados do autômato, isto é, os círculos representam os elementos de $Q$. Cada aresta $(q_i, q_j)$ são rotuladas por $x$ representando assim a transição da forma $\delta(q_i, x) = q_j$. Por fim, os estados finais, isto é, cada $q \in F$ será representado por vértices desenhados como um círculo duplo em vez de um círculo simples e o estado inicial é marcado com uma seta.
+
+\begin{exemplo}\label{exe:AFDA}
+	A representação por grafo de transição do AFD descrito no Exemplo \ref{exe:AFD} corresponde a figura a seguir.
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=5.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]   (A)               {$q_0$};
+			\node[state, accepting] (B) [right of=A]  						 {$q_1$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [bend left]  				node {$a$}     		(B)
+			(B) edge [bend left]  				node {$a$}     		(A);
+		\end{tikzpicture}
+		\caption{Representação visual do AFD no Exemplo \ref{exe:AFD}.}
+		\label{fig:AFD}
+	\end{figure}
+\end{exemplo}
+
+\begin{exemplo}\label{exe:AFDS}
+	O AFD $S = \langle \{s_0, s_1, s_2\}, \{0,1\}, \delta, s_0, \emptyset \rangle$ onde a função de transição é definida como sendo: $\delta(s_0, 0) = s_1, \delta(s_1, 0) = s_2, \delta(s_2, 0) = s_1, \delta(s_0, 1) = s_2, \delta(s_1, 1) = s_1$ e $\delta(s_2, 1) = s_1$, é um AFD e pode ser representado pela Figura \ref{fig:AFD2} a seguir.
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]   			(A)               {$s_0$};
+			\node[]		  						(C) [right of=A]  {};
+			\node[state] 						(B) [above of=C]  {$s_1$};
+			\node[state] 						(D) [below of=C]  {$s_2$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(B) edge [loop right]               node {$1$}           ( )
+			(A) edge			  				node {$0$}     		 (B)
+			(A) edge			  				node {$1$}     		 (D)
+			(B) edge [bend left]  				node {$0$}     		 (D)
+			(D) edge [bend left]  				node [right] {$0, 1$}(B);
+		\end{tikzpicture}
+		\caption{Representação visual do AFD $S$ do Exemplo \ref{exe:AFDS}.}
+		\label{fig:AFD2}
+	\end{figure}
+\end{exemplo}
+
+Pode-se agora então estender a função de transição, para que o autômato possa vir a processar palavras, em vez de apenas símbolos individuais.
+
+\begin{definicao}[Função de Transição Estendida]\label{def:DeltaEstendido}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD a função $\delta$ é estendida para uma função $\widehat{\delta}: Q \times \Sigma^* \rightarrow Q$ usando recursividade como se segue.
+	\begin{eqnarray}\label{eq:ExtensaoDaFuncaoTransicaoDelta}
+		\widehat{\delta}(q, \lambda)& = & q \\
+		\widehat{\delta}(q, wa)& = & \delta(\widehat{\delta}(q, w), a)	
+	\end{eqnarray}
+	onde $q \in Q, a \in \Sigma$ e $w \in \Sigma^*$.
+\end{definicao}
+
+A partir da definição de função de transição estendida é definida  a noção de computação para os AFD, tal conceito é formalizado a seguir.
+
+\begin{definicao}[Computação em AFD]\label{def:ComputacaoAFD}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD e seja $w \in \Sigma^*$ uma computação de $w$ em $A$ corresponde a aplicação $\widehat{\delta}(q_0, w)$.
+\end{definicao}
+
+Note que a definição de computação em AFD pode ser interpretada como sendo a resposta ao seguinte questionamento: ``Em que estado o autômato (ou a máquina) estará após iniciar o processamento no estado inicial e ter lido todos os símbolos da palavra de entrada $w$?''
+
+\begin{exemplo}\label{exe:ComputacaoAFD1}
+	Considere o AFD do Exemplo \ref{exe:AFD} e a palavra de entrada $aaaa$ tem-se que a computação desta palavra corresponde a:
+	\begin{eqnarray*}
+		\widehat{\delta}(q_0, aaaa) & = & \delta(\widehat{\delta}(q_0, aaa), a)\\
+		& = & \delta(\delta(\widehat{\delta}(q_0, aa), a), a)\\
+		& = & \delta(\delta(\delta(\widehat{\delta}(q_0, a), a), a), a)\\
+		& = & \delta(\delta(\delta(\delta(\widehat{\delta}(q_0, \lambda), a), a), a), a)\\
+		& = & \delta(\delta(\delta(\delta(q_0, a), a), a), a)\\
+		& = & \delta(\delta(\delta(q_1, a), a), a)\\
+		& = & \delta(\delta(q_0, a), a)\\
+		& = & \delta(q_1, a)\\
+		& = & q_0
+	\end{eqnarray*}
+\end{exemplo}
+
+\begin{exemplo}\label{exe:ComputacaoAFD2}
+	Considere o AFD do Exemplo \ref{exe:AFDS} e a palavra de entrada $0101$ tem-se que a computação desta palavra corresponde a:
+	\begin{eqnarray*}
+		\widehat{\delta}(s_0, 0101) & = & \delta(\widehat{\delta}(s_0, 010), 1)\\
+		& = & \delta(\delta(\widehat{\delta}(s_0, 01), 0), 1)\\
+		& = & \delta(\delta(\delta(\widehat{\delta}(s_0, 0), 1), 0), 1)\\
+		& = & \delta(\delta(\delta(\delta(\widehat{\delta}(s_0, \lambda), 0), 1), 0), 1)\\
+		& = & \delta(\delta(\delta(\delta(s_0, 0), 1), 0), 1)\\
+		& = & \delta(\delta(\delta(s_1, 1), 0), 1)\\
+		& = & \delta(\delta(s_1, 0), 1)\\
+		& = & \delta(s_2, 1)\\
+		& = & s_1
+	\end{eqnarray*}
+\end{exemplo}
+
+De pose da definição de computação pode-se formalizar o conceito de reconhecimento (ou aceitação) de palavras nos AFD.
+
+\begin{definicao}[Reconhecimento de palavras em AFD]\label{defi:PalavraAceitaPorAFD}
+	\cite{benjaLivro2010} Sejam $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD e seja $w \in \Sigma^*$. A palavra $w$ é dita aceita (reconhece ou computada) por $A$ sempre que $\widehat{\delta}(q_0, w) \in F$ e é rejeitada por $A$ em qualquer outro caso.
+\end{definicao}
+
+É fácil perceber que $\widehat{\delta}(q_0, w) \in F$ com $w = a_1a_2\cdots a_n$ se, e somente se, existir uma sequência finita de estados $(q_i)_{i \in I}$ tal que, 
+$$\delta(q_0, a_1) = q_{i_1}, \delta(q_{i_1}, a_2) = q_{i_2}, \cdots, \delta(q_{i_{n-1}}, a_{n}) = q_{i_n}$$ 
+com $q_n \in F$, sendo uma sequencia de números naturais e $i_1, i_2, i_{n-1}, i_n \in I$. O leitor pode notar que em particular tem-se que $\widehat{\delta}(q_0, \lambda) \in F$ se, e somente se, $q_0 \in F$.
+
+\begin{exemplo}\label{exe:AceiteAFD1}
+	Considerando os Exemplos \ref{exe:ComputacaoAFD1} e \ref{exe:ComputacaoAFD2} tem-se que a palavra $aaaa$ não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD1}, uma vez que, $q_0 \notin F$. Já a palavra $0101$ também não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD2}, uma vez que, $s_1 \notin F$, de fato o leitor atento pode notar que o AFD do Exemplo \ref{exe:ComputacaoAFD2} não aceita qualquer palavra de entrada pois $F = \emptyset$.
+\end{exemplo}
+
+\begin{exemplo}\label{exe:AceiteAFD2}
+	Considere o AFD representado pelo grafo de transições abaixo:
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.7cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]   			(A)               {$q_0$};
+			\node[state] 						(B) [right of=A]  {$q_1$};
+			\node[state, accepting]				(C) [above of=B]  {$q_2$};
+			\node[state, accepting]				(D) [below of=B]  {$q_3$};
+			\node[state] 						(E) [right of=B]  {$q_4$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 				            node {$1$}           (C)
+			(A) edge			  				node {$0$}     		 (D)
+			(C) edge [bend left]  				node {$1$}     		 (E)
+			(C)	edge							node [left] {$0$}	 (B)
+			(E) edge [bend left]  				node [right] {$0$} 	 (C)
+			(D) edge [bend left]  				node [right] {$0$}	 (E)
+			(D)	edge							node [left] {$1$}	 (B)
+			(E) edge [bend left]  				node {$1$} 	 		 (D)
+			(B) edge [loop left]                node {$0,1$}         ( );
+		\end{tikzpicture}
+		\caption{Um AFD com dois estados finais.}
+		\label{fig:AFD3}
+	\end{figure}
+
+	Por indução sobre o tamanho das palavras é fácil mostrar que este AFD reconhece palavras das forma $1(10)^n$ e $1(10)^n$ com $n \in \mathbb{N}$.
+\end{exemplo}
+
+Tendo definido precisamente as noções de AFD e de computação em AFD, agora é possível definir formalmente a ideia de linguagem reconhecida (ou computada) por um AFD.
+
+\begin{definicao}[Linguagem de um AFD]\label{def:LinguagemAFD}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD a linguagem reconhecida (ou computada) por $A$, denotada por $\mathcal{L}(A)$, corresponde ao conjunto de todas as palavras aceitas por $A$, formalmente tem-se que:
+	\begin{eqnarray}
+		\mathcal{L}(A) = \{w \in \Sigma^* \mid \widehat{\delta}(q_0, w) \in F\}
+	\end{eqnarray}
+\end{definicao}
+
+Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD reconhece uma linguagem $L \subseteq \Sigma^*$, então ele para em estados finais apenas para as palavras $w \in L$. Em outra palavra para mostrar que uma linguagem $L$ é a linguagem de um AFD $A$, deve-se provar que $L = \mathcal{L}(A)$, ou seja, deve-se provar que $w \in L \Longleftrightarrow w \in \mathcal{L}(A)$, em geral quando $L$ é infinito tal prova é por indução.
+
+\begin{exemplo}\label{exe:AFDLinguagem1}
+	A seguir você encontrará a prova de que a linguagem $L = \{bba^{2n} \mid n \in \mathbb{N}\}$ é reconhecida pelo AFD $A_1$ na Figura \ref{fig:AFDLinguagem1} a seguir.
+
+  \begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$q_0$};
+			\node[state] 						(B) [right of=A] 	{$q_1$};
+			\node[state, accepting]				(C) [right of=B] 	{$q_2$};
+			\node[state]						(D) [below of=C] 	{$q_3$};
+			\node[state]						(E)	[right of=C]	{$q_4$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge			  				node {$b$}		 (B)
+			(A) edge			  				node {$a$}		 (D)
+			(B) edge			  				node {$b$}		 (C)
+			(B) edge			  				node {$a$}		 (D)
+			(C) edge			  				node {$b$}		 (D)
+			(C) edge [bend right] 			  	node {$a$}		 (E)
+			(E) edge [bend right] 			  	node {$a$}		 (C)
+			(E) edge			  				node {$b$}		 (D)
+			(D) edge [loop right] 			  	node {$a,b$}	 ( );
+		\end{tikzpicture}
+		\caption{AFD $A_1$ que reconhece a linguagem $\{bba^{2n} \mid n \in \mathbb{N}\}$.}
+		\label{fig:AFDLinguagem1}
+	\end{figure}
+\end{exemplo}
+
+\begin{prova}
+  $(\Rightarrow)$ Suponha que $w \in L$ assim $w = bba^{2n}$ e por indução sobre o tamanho das palavras tem-se que,
+  \begin{itemize}
+    \item[ ] \textbf{(B)}ase: Quando $n = 0$ vale que $w = bba^{2\cdot 0}$ e usando a definição do AFD tem-se que, 
+    $$\widehat{\delta}(q_0, bba^{2\cdot 0}) = \widehat{\delta}(q_0, bb) = \delta(\widehat{\delta}(q_0, b), b) = \delta(\delta(\widehat{\delta}(q_0, \lambda), b), b) = q_2$$
+    como $q_2 \in F$ tem-se que $bb \in \mathcal{L}(A_1)$.
+    \item[ ] \textbf{(H)}ipótese indutiva: Suponha que para todo $n \in \mathbb{N}$ tem-se que $\widehat{\delta}(q_0, bba^{2n}) \in F$, ou seja, $\widehat{\delta}(q_0, bba^{2n}) = q_2$.
+    \item[ ] \textbf{(P)}asso indutivo: Dado $w = bba^{2(n+1)}$ tem-se que
+    \begin{eqnarray*}
+      \widehat{\delta}(q_0, bba^{2(n+1)}) & = & \widehat{\delta}(q_0, bba^{2n + 2})\\
+      & = & \widehat{\delta}(q_0, bba^{2n}aa)\\
+      & = & \delta(\delta(\widehat{\delta}(q_0, bba^{2n}), a), a)\\
+      & \stackrel{\textbf{(HI)}}{=} & \delta(\delta(q_2, a), a)\\
+      & = & \delta(q_3, a)\\
+      & = & q_2
+    \end{eqnarray*} 
+    Logo, por \textbf{(B), (H)} e \textbf{(P)} tem-se que $\widehat{\delta}(q_0, bba^{2n}) \in \mathcal{L}(A_1)$ para qualquer que seja $n \in \mathbb{N}$.  
+  \end{itemize}
+  $(\Leftarrow)$ Suponha que $w \in \mathcal{L}(A_1)$, assim pela definição do AFD $A_1$ tem-se que $\widehat{\delta}(q_0, w) = q_2$, entretanto, pela definição de $\delta$ (ver Figura \ref{fig:AFDLinguagem1}) tem-se que $q_2$ só é acessado pelas transições $\delta(q_1, b)$ e $\delta(q_4, a)$, ou seja, $w = w_1a$ ou $w = w_2b$ com $w_1, w_2 \in \Sigma^*$. Agora analisando cada possibilidade em separado tem-se que: 
+  \begin{itemize}
+    \item Para realizar o acesso via $q_1$ é necessário obviamente chegar em $q_1$ e isso só é possível a partir da transição $\delta(q_0, b)$, logo o acesso a $q_2$ via $q_1$ só é permitido para palavras com o prefixo $bb$, agora como toda palavra é prefixo de si mesmo isso já garante que $bb \in \mathcal{L}(A_1)$.
+    \item Já o acesso via $q_4$ só é permitido pela transição $\delta(q_2, a)$ e como visto no caso anterior tem-se que o estado $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um \textit{loop} e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
+  \end{itemize}
+  Note que a palavra $bb$ pode ser escrita como sendo $bba^0$, portanto, pelas duas análises anteriores pode-se concluir que se $\widehat{\delta}(q_0, w) = q_2$, então $w = bba^{2n}$ com $n \in \mathbb{N}$, e portanto, $w \in L$, completando assim a prova. 
+\end{prova}
+
+\begin{exemplo}
+	O AFD $A$ do Exemplo \ref{exe:AFD} reconhece a linguagem $L = \{a^{2n + 1} \mid n \in \mathbb{N}\}$.
+\end{exemplo}
+
+\begin{prova}
+  $(\Rightarrow)$ Suponha que $w \in L$ assim $w = a^{2n+1}$, agora por indução sobre o tamanho das palavras tem-se que, 
+  
+  \begin{itemize}
+    \item[ ] \textbf{(B)}ase: Quando $n = 0$ vale a igualdade $w = a^{2\cdot 0+1}$, agora usando a definição do AFD $A$ tem-se que, 
+    \begin{eqnarray*}
+      \widehat{\delta}(q_0, a^{2\cdot 0+1}) = \widehat{\delta}(q_0, a^{1}) = \delta(\widehat{\delta}(q_0, \lambda), a) = \delta(q_0, a) = q_1
+    \end{eqnarray*}
+    e como $q_1 \in F$ tem-se que $a^{2\cdot 0+1} \in \mathcal{L}(A)$, ou seja, $w \in \mathcal{L}(A)$.
+    
+    \item[ ] \textbf{(H)}ipótese indutiva: Suponha que para todo $n \in \mathbb{N}$ tem-se que $\widehat{\delta}(q_0, a^{2n+1}) \in F$, ou seja, $\widehat{\delta}(q_0, a^{2n+1}) = q_1$.
+    
+    \item[ ] \textbf{(P)}asso indutivo: Dado $w = a^{2(n+1)+1}$ tem-se que,
+    
+    \begin{eqnarray*}
+      \widehat{\delta}(q_0, a^{2(n+1)+1}) & = & \widehat{\delta}(q_0, a^{2n+1+2})\\
+      & = & \widehat{\delta}(q_0, a^{2n+1}aa)\\
+      & = & \delta(\delta(\widehat{\delta}(q_0, a^{2n+1}), a), a)\\
+      & \stackrel{\textbf{(HI)}}{=} & \delta(\delta(q_1, a), a)\\
+      & = & \delta(q_0, a)\\
+      & = & q_1
+    \end{eqnarray*}
+    Logo, por \textbf{(B), (H)} e \textbf{(P)} tem-se que $\widehat{\delta}(q_0, a^{2n + 1}) \in \mathcal{L}(A_1)$ para qualquer que seja $n \in \mathbb{N}$. 
+  \end{itemize}
+  $(\Leftarrow)$ A volta fica como exercício argumentativo ao leitor.
+\end{prova}
+
+Pode-se agora formalizar a primeira das classes de linguagens sendo esta a classe das linguagens regulares, tal classe foi primeiramente definida por Kleene em seu trabalho \cite{kleene1951}, entretanto, em tal ocasião tais linguagens foram chamadas de eventos regulares, como será visto é momentos futuros nesse manuscrito a classe das linguagens regulares é aquela que possui o menor nível complexidade computacional.
+
+\begin{definicao}[Linguagens Regulares]\label{def:LinguagensRegulares}
+	Uma linguagem $L$ qualquer é dita ser regular se, e somente se, existe um AFD $A$ tal que $L = \mathcal{L}(A)$. A classe de todas as linguagens regulares é denotada por $\mathcal{L}_{Reg}$.
+\end{definicao}
