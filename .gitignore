@@ -37,3 +37,6 @@
 
 # Ignore unix-like system files
 .DS_Store
+
+# Ignore compiled file
+*.pdf
