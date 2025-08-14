@@ -21,10 +21,10 @@ Esse documento será dividido em quatro partes:
 
 1. Introdução e Fundamentos. 🧱
     
-    ⚠️ Seção de Autômatos finitos (Breve e necessita melhorar MUITO).
-    ✅ Seção de Linguagens (Já em nível interessante, porém, precisa de mais exemplos).
-    ✅ Seção de gramáticas (Já em nível interessante, porém, precisa detalhar alguns pontos).
-    ⚠️ Lista de exercícios - No estado atual considero insuficiente.
+    - ⚠️ Seção de Autômatos finitos (Breve e necessita melhorar MUITO).
+    - ✅ Seção de Linguagens (Já em nível interessante, porém, precisa de mais exemplos).
+    - ✅ Seção de gramáticas (Já em nível interessante, porém, precisa detalhar alguns pontos).
+    - ⚠️ Lista de exercícios - No estado atual considero insuficiente.
 
 2. Linguagens Regulares - (em processo de escrita atual). 🚧
 
