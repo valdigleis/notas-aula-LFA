@@ -1,6 +1,6 @@
-# Notas de Aula para LFA
+# Sobre este repostório
 
-Este repositório contém um versão eletrônica das minhas notas de aula para o curso DIM0606. As notas estão sendo digitadas na medida que as aulas vão passando, assim **não é um material completo**!
+Este repositório contém uma versão eletrônica das minhas notas de aula para o curso DIM0606. As notas estão sendo digitadas na medida que as aulas vão passando, assim **não é um material completo**!
 
 > [!WARNING]
 > Este material não deve ser o ÚNICO material de estudo do leitor para o curso!
@@ -10,7 +10,7 @@ Este repositório contém um versão eletrônica das minhas notas de aula para o
 
 # Sobre erros 🧻
 
-Este projeto esta atualmente longe de ser concluído (e talvez nunca seja plenamente concluído), assim diversos erros podem aparece no texto, erros de conteúdo, em exemplos, de digitação e etc. Assim sendo, EU (Valdigleis) ficaria feliz se os leitores pudessem me notificar via e-mail (valdigleis@dimap.ufrn.br) ou abrindo  Issues no repositório deste projeto. 
+Este projeto esta atualmente longe de ser concluído (e talvez nunca seja plenamente concluído), assim diversos erros podem aparece no texto, tais como: erros de conteúdo (em exemplos, provas e definiçãoes), de digitação e etc. Assim sendo, EU (Valdigleis) ficaria feliz se os leitores pudessem me notificar via e-mail (valdigleis@dimap.ufrn.br) ou abrindo  Issues no repositório deste projeto. 
 
 > [!NOTE]\
 > Como recompensa, prometo pagar um satoshis byte, ou seja, pago o valor de 0,00000008 BTC por erro 🤑. Além disso, listo o nome do revisor na seção de revisores (a ser inserida no documento).
@@ -19,20 +19,19 @@ Este projeto esta atualmente longe de ser concluído (e talvez nunca seja plenam
 
 Esse documento será dividido em quatro partes:
 
-1. Introdução e Fundamentos.
+1. Introdução e Fundamentos. 🧱
+    
+    ⚠️ Seção de Autômatos finitos (Breve e necessita melhorar MUITO).
+    ✅ Seção de Linguagens (Já em nível interessante, porém, precisa de mais exemplos).
+    ✅ Seção de gramáticas (Já em nível interessante, porém, precisa detalhar alguns pontos).
+    ⚠️ Lista de exercícios - No estado atual considero insuficiente.
 
-    ⚠️ Texto em avançado desenvolvimento, mais ainda precisa de reorganização, atualmente conta com um único capítulo formado pelas seções: 
-    - Seção de Autômatos finitos (Breve e necessita melhorar MUITO).
-    - Seção de Linguagens (Já em nível interessante, porém, precisa de mais exemplos).
-    - Seção de gramáticas (Já em nível interessante, porém, precisa detalhar alguns pontos).
-    - Lista de exercícios - No estado atual considero insuficiente.
-
-2. Linguagens Regulares - (em processo de escrita atual)
+2. Linguagens Regulares - (em processo de escrita atual). 🚧
 
     ⚠️ Texto em fase inicial, muito erros podem estar nessa parte do texto, essa parte será dividida em três (ou) capítulos.
 
 3. Linguagens Livres do Contexto - (em processo de planejamento) 🛑 
-4. Linguagens Livres do Contexto - (em processo de planejamento) 🛑
+4. Linguagens Livres Recursivamente Enumeráveis - (em processo de planejamento) 🛑
 
 
 ## Para compilar 🏗️
