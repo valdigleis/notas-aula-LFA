@@ -2,10 +2,20 @@
 
 Este repositório contém um versão eletrônica das minhas notas de aula para o curso DIM0606. As notas estão sendo digitadas na medida que as aulas vão passando, assim **não é um material completo**!
 
-> [!NOTE]\
-> Este projeto esta atualmente longe de ser concluído, assim diversos erros podem aparece no texto, então ficaria feliz se os leitores pudessem me notificar via e-mail (valdigleis@dimap.ufrn.br) ou abrindo uma Issues no repositório deste projeto. Como recompensa, prometo pagar um satoshis byte, ou seja, pago o valor de 0,00000008 BTC por erro 🤑. Além disso, listo o nome do revisor na seção de revisores (a ser inserida no documento).
+> [!WARNING]
+> Este material não deve ser o ÚNICO material de estudo do leitor para o curso!
 
-## Organização do texto
+> [!IMPORTANT]  
+> O material pode ser compartilhado, redistribuído e até modificado, só não deve ser VENDIDO!
+
+# Sobre erros 🧻
+
+Este projeto esta atualmente longe de ser concluído (e talvez nunca seja plenamente concluído), assim diversos erros podem aparece no texto, erros de conteúdo, em exemplos, de digitação e etc. Assim sendo, EU (Valdigleis) ficaria feliz se os leitores pudessem me notificar via e-mail (valdigleis@dimap.ufrn.br) ou abrindo  Issues no repositório deste projeto. 
+
+> [!NOTE]\
+> Como recompensa, prometo pagar um satoshis byte, ou seja, pago o valor de 0,00000008 BTC por erro 🤑. Além disso, listo o nome do revisor na seção de revisores (a ser inserida no documento).
+
+## Organização do texto 📋
 
 Esse documento será dividido em quatro partes:
 
