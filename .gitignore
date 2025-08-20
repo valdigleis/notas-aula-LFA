@@ -39,4 +39,4 @@
 .DS_Store
 
 # Ignore compiled file
-*.pdf
+#*.pdf
