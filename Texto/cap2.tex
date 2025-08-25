@@ -707,3 +707,159 @@ Os $\lambda$-Autômatos Finitos Não-determinísticos, ou simplesmente, $\lambda
 \end{definicao}
 
 A representação usando grafos de transição dos $\lambda$-AFN e similar a representação dos AFN da seção anterior, a única diferença é que podem haver transições rotuladas pelo símbolo $\lambda$, isto é, podem existir no grafo arestas entre vértices que são rotuladas por $\lambda$, e o mesmo vale para a representação das árvores de computação.
+
+\begin{exemplo}\label{exe:LAFN1}
+	A estrutura $A = \langle \{q_0, q_1, q_2\}, \{0,1\}, \underline{\delta_N}, q_0, \{q_0\}\rangle$ com $\underline{\delta_N}$ sendo especificada pela Tabela \ref{tab:DeltaLAFN1} a seguir é um $\lambda$-AFN.
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{c|ccc}
+			\backslashbox{$Q$}{$\Sigma \cup \{\lambda\}$}	& $0$ & $1$ & $\lambda$\\ \hline
+			$q_0$  & $\emptyset$ & $\emptyset$ & $\{q_1\}$\\
+			$q_1$  & $\{q_1\}$ & $\{q_2\}$ & $\{q_2\}$\\
+			$q_2$  & $\{q_2\}$ & $\{q_2\}$ & $\{q_0, q_2\}$ \\ \hline
+		\end{tabular}
+		\caption{Tabela de transição para a função $\underline{\delta_N}$ do AFN no Exemplo \ref{exe:LAFN1}.}
+		\label{tab:DeltaLAFN1}
+	\end{table}
+\end{exemplo} 
+
+
+\begin{exemplo}\label{exe:LAFN-linguagem}
+	O $\lambda$-AFN $A = \langle \{q_0, q_1, q_2\}, \{0, 1\}, \underline{\delta_N}, q_0, \{q_2\} \rangle$ com $\underline{\delta_N}$ sendo especificada pela Tabela \ref{tab:DeltaLAFN-linguagem1} a seguir é um $\lambda$-AFN.
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{c|ccc}
+			\backslashbox{$Q$}{$\Sigma \cup \{\lambda\}$}	& $0$ & $1$ & $\lambda$\\ \hline
+			$q_0$  & $\emptyset$ & $\emptyset$ & $\{q_1\}$\\
+			$q_1$  & $\{q_1\}$ & $\emptyset$ & $\{q_2\}$\\
+			$q_2$  & $\emptyset$ & $\{q_2\}$ & $\emptyset$ \\ \hline
+		\end{tabular}
+		\caption{Tabela de transição para a função $\underline{\delta_N}$ do AFN no Exemplo \ref{exe:LAFN-linguagem}.}
+		\label{tab:DeltaLAFN-linguagem1}
+	\end{table}
+
+	e representado pela figura \ref{fig:LAFN-linguagem} a seguir. 
+
+
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]									(A)               	{$q_0$};
+			\node[state]													(B) [right of=A] 	{$q_1$};
+			\node[state, accepting]				        (C) [right of=B] 	{$q_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge											node 		 {$\lambda$} (B)
+			(B) edge [loop above]  				node 		 {$0$} 		 ( )
+			(C) edge [loop above]  				node 		 {$1$} 		 ( )
+			(B) edge											node 		 {$\lambda$} (C);
+		\end{tikzpicture}
+		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LAFN-linguagem}.}
+		\label{fig:LAFN-linguagem}
+	\end{figure}
+\end{exemplo}
+
+\begin{exemplo}
+	O grafo de transição representado na Figura \ref{fig:LAFN1} a seguir é uma representação para o $\lambda$-AFN do Exemplo \ref{exe:LAFN1}.
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial, accepting]	(A)               	{$q_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+			\node[state]				        (C) [right of=B] 	{$q_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge							node 		 {$\lambda$} (B)
+			(B) edge							node [above] {$1, \lambda$} (C)
+			(B) edge [loop above]  				node 		 {$0$} 		 ( )
+			(C) edge [loop above]  				node 		 {$1, 0, \lambda$} ( )
+			(C) edge [bend left]  				node [below] {$\lambda$} (A);
+		\end{tikzpicture}
+		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LAFN1}.}
+		\label{fig:LAFN1}
+	\end{figure}
+\end{exemplo}
+
+Uma interpretação para as transições da forma $\underline{\delta_N}(q, \lambda) = X$ é que a unidade de controle do autômato consegue mudar seu estado interno $q$ para um subconjunto de estados $X$ sem precisar acessar a memória.
+
+Note porém que a definição da função de transição $\underline{\delta_N}$ garante que as transições em um $\lambda$-AFN acontecem apenas em duas situações, a primeira em relação símbolos individuais do alfabeto $\Sigma$ e a segunda com relação a palavra vazia, assim não existe uma forma de computar uma palavra $w$ de forma que $|w| > 1$. A saída para contorna esse fato é estender a função de transição do autômato, similarmente ao que é feito para os AFD e AFN, para isso entretanto, é necessária algumas definições adicionais.
+
+\begin{definicao}[Função $\delta_\lambda$]\label{def:L-fecho}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN, então a função $\delta_\lambda: Q \rightarrow \wp(Q)$ é definida como,
+	\begin{equation}
+		\delta_\lambda(q) = \bigcup_{i = 0}^n\lambda\text{-fecho}^i(q)
+	\end{equation}
+	onde $n = \# Q - 1$ e
+	\begin{eqnarray}
+		\lambda\text{-fecho}^0(q) & = & \{q\}\\
+		\lambda\text{-fecho}^{i+1}(q) & = & \bigcup_{q' \in \lambda\text{-fecho}^{i}(q)} \underline{\delta_N}(q', \lambda)
+	\end{eqnarray}
+\end{definicao}
+
+\begin{exemplo}
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN-linguagem} tem-se para o estado $q_1$ que,
+	\begin{eqnarray}\label{eq:LAFNeq1}
+		\delta_\lambda(q_1) & = & \bigcup_{i = 0}^{2}\lambda\text{-fecho}^i(q_1) \nonumber\\
+		& = & \lambda\text{-fecho}^2(q_1) \cup \lambda\text{-fecho}^1(q_1) \cup \lambda\text{-fecho}^0(q_1)  
+	\end{eqnarray}
+	sabe-se que, 
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{0}(q_1) & = &  \{q_1\}
+	\end{eqnarray*}
+	e desenvolvendo $\lambda\text{-fecho}^{2}(q_1)$ tem-se que,
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{2}(q_1) & = &  \bigcup_{q' \in \lambda\text{-fecho}^{1}(q_1)} \underline{\delta_N}(q', \lambda)
+	\end{eqnarray*}
+	mas, 
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{1}(q_1) & = & \bigcup_{q' \in \lambda\text{-fecho}^{0}(q_1)} \underline{\delta_N}(q', \lambda)\\
+		& = & \bigcup_{q' \in \{q_1\}} \underline{\delta_N}(q', \lambda)\\
+		& = & \{q_2\}
+	\end{eqnarray*}
+	assim,
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{2}(q_1)  =   \bigcup_{q' \in \{q_2\}} \underline{\delta_N}(q', \lambda) = \underline{\delta_N}(q_2, \lambda) = \emptyset 
+	\end{eqnarray*}
+	substituindo tais resultados na Equação \ref{eq:LAFNeq1} tem-se que, 
+	\begin{eqnarray*}\label{eq:LAFNeq2}
+		\delta_\lambda(q_1) & = &  \emptyset \cup \{q_2\} \cup \{q_1\} = \{q_1, q_2\}
+	\end{eqnarray*}
+\end{exemplo}
+
+Uma interpretação semântica para a função $\delta_\lambda$ é que ela representa a resposta ao questionamento: ``Estando no estado $q$ e executando $n$ $\lambda$-transições qual subconjunto de estados a unidade central do autômato irá assumir?''. 
+
+\begin{definicao}[Função $\widehat{\delta_\lambda}$]\label{def:L-Fecho}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN, então a função $\widehat{\delta_\lambda}: \wp(Q) \rightarrow \wp(Q)$ é definida como,
+	\begin{equation}
+		\widehat{\delta_\lambda}(X) = \bigcup_{q \in X} \delta_\lambda(q)
+	\end{equation}
+\end{definicao}
+
+\begin{exemplo}
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se para o conjunto $\{q_1, q_2\}$ que,
+	\begin{eqnarray*}
+		\widehat{\delta_\lambda}(\{q_1, q_2\}) & = & \bigcup_{q \in \{q_1, q_2\}} \delta_\lambda(q)\\
+		& = & \delta_\lambda(q_1) \cup \delta_\lambda(q_2)\\
+		& = & \{q_0, q_1, q_2\} \cup \{q_0, q_2, q_1\}\\
+		& = & \{q_0, q_2, q_1\}
+	\end{eqnarray*}
+\end{exemplo}
+
+Agora usando as definições de $\delta_\lambda$ e $\widehat{\delta_\lambda}$ pode-se apresentar a extensão da função de transição dos $\lambda$-AFN.
+
+\begin{definicao}[$\lambda$-Transição não-determinística estendida]\label{def:FuncaoLDeltaNDEstendida}
+	Dado um $\lambda$-AFN  $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$, a função $\underline{\delta_N}$ é estendido para a função $\widehat{\underline{\delta_N}}: Q \times \Sigma^* \rightarrow \wp(Q)$ definida pela seguinte recursão:
+	\begin{eqnarray}\label{eq:FuncaoLDeltaNDEstendida}
+		\widehat{\underline{\delta_N}}(q, \lambda)& = &  \delta_\lambda(q)\\
+		\widehat{\underline{\delta_N}}(q, wa) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q, w)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', a))
+	\end{eqnarray}
+\end{definicao}
+
+
