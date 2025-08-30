@@ -4,9 +4,9 @@
 
 \section{Introdução}\label{sec:IntroComputabilite}
 
-O conceito de linguagem formal é estabelecido como sendo um conjunto (possivelmente infinito) de palavras (ou sentenças) definidas sobre um dado alfabeto. Cada palavra em uma linguagem formal é simplesmente uma sequência finita de símbolos presente no alfabeto alfabeto em questão. As palavras de uma linguagem formal, em alguns cenários são também pode ser chamadas de termos, ou ainda, de fórmulas \cite{joaoPavao2014}.
+O conceito de linguagem formal é estabelecido como sendo um conjunto (possivelmente infinito) de palavras (ou sentenças) definidas sobre um dado alfabeto. Cada palavra em uma linguagem formal é simplesmente uma sequência finita de símbolos presentes no alfabeto em questão. As palavras de uma linguagem formal, em alguns cenários podem ser chamadas de termos, ou ainda, de fórmulas \cite{joaoPavao2014}.
 
-A sintaxe de qualquer linguagem formal é especificada por um conjunto finito de regras bem definidas, tal conjunto recebe o nome de gramática. A gramática é de fato o mecanismo que determinam a estrutura das palavras que podem existir dentro da linguagem, o que faz com que não exista nenhum grau de liberdade na forma (o por isso a nomenclatura \textbf{formal}) das palavras\cite{benja-Logica}, ou seja, todas as palavras devem seguir uma forma rigorosa. 
+A sintaxe de qualquer linguagem formal é especificada por um conjunto finito de regras bem definidas, tal conjunto recebe o nome de gramática. A gramática é de fato o mecanismo que determina a estrutura das palavras que podem existir dentro da linguagem, o que faz com que não exista nenhum grau de liberdade na forma (o por isso a nomenclatura \textbf{formal}) das palavras\cite{benja-Logica}, ou seja, todas as palavras devem seguir uma forma rigorosa. 
 
 No que diz respeito a palavras em uma linguagem formal, elas (como já foi dito) são apenas sequência de símbolos sem qualquer significado. Para atribuir um significado as palavras de uma linguagem formal, isto é, para atribuir semântica a linguagem formal, é obrigatoriamente necessário definir externamente\sidefootnote{No sentido de que a interpretação das palavras é feita fora de sua gramática geradora.} uma estrutura avaliativa a semântica da linguagem, e de fato, isso é exatamente o que ocorrer durante a construção de compiladores e interpretadores para as linguagens de programação (detalhes em \cite{aho2007, cooper2017}), essa estrutura externa funciona como um universo avaliativo, no qual as palavras da linguagem pode ser interpretadas (ter seu significado exposto).
 
@@ -14,7 +14,7 @@ Neste documento o foco será descrever uma teoria para computabilidade nos padr�
 
 \section{Sobre Autômatos Finitos}\label{sec:Automata}
 
-Como dito em \cite{valdi2016master, valdi2020phd} uma definição informal do conceito de autômato finito (ou máquina de estado finita) e que tais dispositivos podem ser vistos como sendo máquinas com dois componentes fundamentais:
+Como dito em \cite{valdi2016master, valdi2020phd} uma definição informal do conceito de autômato finito (ou máquina de estado finita) é que tais dispositivos podem ser vistos como sendo máquinas com dois componentes fundamentais:
 
 \begin{itemize}
 	\item Um conjunto finito de memórias\sidefootnote{Na literatura também é usado o termo fita em vez de memória \cite{menezes1998LFA}.}, estas sendo subdivididas em células, cada uma das quais capaz de comportar um único símbolo por vez.
@@ -83,7 +83,7 @@ Neste primeiro momento para o estudo dos autômatos finitos serão apresentados 
 \end{definicao}
 
 \begin{exemplo}
-	Os conjuntos $\{0, 1, 2, 3\}, \{a, b, c\}, \{\heartsuit,\spadesuit, \Diamond, \clubsuit\}$ e $\{n \in \mathbb{N} \mid n \leq 25\}$ são todos alfabetos, os conjuntos $\mathbb{N}$ e $\mathbb{R}$ não são alfabetos.
+	Os conjuntos $\{0, 1, 2, 3\}, \{a, b, c\}, \{\heartsuit,\spadesuit, \Diamond, \clubsuit\}$ e $\{n \in \mathbb{N} \mid n \leq 25\}$ são todos alfabetos. Por sua vez, os conjuntos $\mathbb{N}$ e $\mathbb{R}$ não são alfabetos.
 \end{exemplo}
 
 \begin{exemplo}
@@ -134,7 +134,7 @@ Sobre qualquer alfabeto $\Sigma$ sempre é definida uma palavra especial chamada
 	|\lambda| & = &  0
 \end{eqnarray}
 
-Isto é, a palavra vazia é neutra para a operação de concatenação, além disso, a mesma apresenta comprimento nulo.
+Isto é, a palavra vazia é neutra para a operação de concatenação e apresenta comprimento nulo.
 
 \begin{definicao}[Potência das palavras]\label{def:PotenciaPalavras}
 	Seja $w$ uma palavra sobre um alfabeto $\Sigma$ a potência de $w$ é definida recursivamente para todo $n \in \mathbb{N}$ como sendo:
@@ -181,10 +181,10 @@ Outro importante conceito existente sobre a ideia de palavra é a noção de pal
 	Dado as palavras $u = aba, v = 011101$ e $w = 3021$ tem-se que $u^r = aba, v^r = 101110$ e $w^r = 1203$.
 \end{exemplo}
 
-Além das palavras, pode-se também formalizar uma série de operações sobre a própria noção de alfabeto. Em primeiro lugar, uma vez que,  alfabetos são conjuntos, obviamente todas operações usuais de união, interseção, complemento, diferença e diferença simétrica também são válidas sobre alfabetos. Além dessas operações, também esta definida a operação de potência e os fechos positivo e de Kleene sobre alfabetos.
+Além das palavras, pode-se também formalizar uma série de operações sobre a própria noção de alfabeto. Em primeiro lugar, uma vez que,  alfabetos são conjuntos, obviamente todas operações usuais de união, interseção, complemento, diferença e diferença simétrica também são válidas sobre alfabetos. Além dessas operações, também está definida a operação de potência e os fechos positivo e de Kleene sobre alfabetos.
 
 \begin{definicao}[Potência de um alfabeto]\label{def:PotenciaAlfabeto}
-	\cite{benjaLivro2010} Seja $\Sigma$ um alfabeto a potência de $\Sigma$ é definida recursivamente para todo $n \in \mathbb{N}$ como:
+	\cite{benjaLivro2010} Seja $\Sigma$ um alfabeto, a potência de $\Sigma$ é definida recursivamente para todo $n \in \mathbb{N}$ como:
 	\begin{eqnarray}
 		\Sigma^0 & = & \{\lambda\}\\
 		\Sigma^{n+1} & = & \{aw \mid a \in \Sigma, w \in \Sigma^{n}\}
@@ -205,7 +205,7 @@ O leitor mais atencioso e maduro matematicamente pode notar que para qualquer qu
 	Seja $\Sigma$ um alfabeto o fecho positivo e o fecho de Kleene de $\Sigma$, denotados respectivamente por $\Sigma^+$ e $\Sigma^*$, correspondem aos conjuntos: $\displaystyle\Sigma^+  =  \bigcup_{i = 1}^\infty \Sigma^i$ e $\displaystyle \Sigma^*  =  \bigcup_{i = 0}^\infty \Sigma^i$.
 \end{definicao}
 
-Obviamente como dito em \cite{benjaLivro2010}, o fecho positivo pode ser reescrito em função do fecho de Kleene usando a operação de diferença de conjunto, isto é, o fecho positivo corresponde a seguinte identidade, $\Sigma^+ = \Sigma^* - \{\lambda\}$. Sobre o fecho de Kleene como destacado em \cite{valdi2020phd} o mesmo corresponde ao monoide livremente gerado pelo conjunto $\Sigma$ munida da operação de concatenação.
+Obviamente como dito em \cite{benjaLivro2010}, o fecho positivo pode ser reescrito em função do fecho de Kleene usando a operação de diferença de conjunto, isto é, o fecho positivo corresponde a seguinte identidade, $\Sigma^+ = \Sigma^* - \{\lambda\}$. O fecho de Kleene, como destacado em \cite{valdi2020phd}, corresponde ao monoide livremente gerado pelo conjunto $\Sigma$ munida da operação de concatenação.
 
 \begin{definicao}[Prefixos e Sufixos]\label{def:PrefixoSufixo}
 	Uma palavra $u \in \Sigma^*$ é um prefixo de outra palavra $w \in \Sigma^*$, denotado por $u \preceq_p w$, sempre que $w = uv$, com $v \in \Sigma^*$. Por outro lado, uma palavra $u$ é um sufixo de outra palavra $w$, denotado por $u \preceq_s w$, sempre que $w = vu$.
@@ -247,7 +247,7 @@ Obviamente como dito em \cite{benjaLivro2010}, o fecho positivo pode ser reescri
 	\end{itemize}
 \end{exemplo}
 
-Com respeito a cardinalidade dos conjuntos de prefixos e sufixos, os mesmo apresentam as propriedades descritas pelo teorema a seguir.
+Com respeito a cardinalidade dos conjuntos de prefixos e sufixos, eles apresentam as propriedades descritas pelo teorema a seguir.
 
 \begin{teorema}\label{teo:CardinalidadePrefixoSufixo}
 	Para qualquer que seja $w \in \Sigma^*$ as seguintes asserções são verdadeiras.
@@ -261,7 +261,7 @@ Com respeito a cardinalidade dos conjuntos de prefixos e sufixos, os mesmo apres
 \begin{prova}
 	Dado uma palavra $w$ tem-se que:
 	\item[ (i)] Sem perda de generalidade assumindo que $w = a_1\cdots a_n$ logo $w \in \Sigma^n$ (o caso quando $w = \lambda$ é trivial e não será demonstrado aqui) logo $|w| = n$ para algum $n \in \mathbb{N}$, assim existem exatamente $n$ palavras da forma $a_1 \cdots a_i$ com $1 \leq i \leq n$ tal que $a_1 \cdots a_i \preceq_p w$, portanto, para todo $1 \leq i \leq n$ tem-se que $a_1 \cdots a_i \in PRE(w)$, além disso, é claro que $w = \lambda w$, e portanto, $\lambda \in PRE(w)$, consequentemente, $\#PRE(w) = n + 1 = |w| + 1$.
-	\item[ (ii)] Analoga ao item anterior.
+	\item[ (ii)] Análoga ao item anterior.
 	\item[ (iii)] Trivial, pois basta notar que $\lambda, w \in (PRE(w) \cap SUF(w))$, e portanto, tem-se claramente que $\#(PRE(w) \cap SUF(w)) > 1$.
 \end{prova}
 
@@ -290,7 +290,7 @@ Seguindo com este documento pode-se finalmente formalizar o pilar fundamental (a
 	\end{itemize}
 \end{exemplo}
 
-Similarmente ao que ocorre com os alfabetos, as linguagens por serem conjuntos ``herdam'' as operações básicas da teoria dos conjuntos \cite{lipschutz1978-TC, lipschutz2013-MD, abe1991-TC}, isto é, estão definidas sobre as linguagens as operações de união, interseção, completo, diferença e diferença simétrica. E como par aos alfabetos novas operações são definidas.
+Similarmente ao que ocorre com os alfabetos, as linguagens por serem conjuntos ``herdam'' as operações básicas da teoria dos conjuntos \cite{lipschutz1978-TC, lipschutz2013-MD, abe1991-TC}, isto é, estão definidas sobre as linguagens as operações de união, interseção, complemento, diferença e diferença simétrica. E como par aos alfabetos novas operações são definidas.
 
 \begin{definicao}[Concatenação de Linguagens]\label{def:ConcatenacaoLinguagem}
 	Sejam $L_1$ e $L_2$ duas linguagens, a concatenação de $L_1$ com $L_2$, denotado por $L_1L_2$, corresponde a seguinte linguagem:
@@ -351,7 +351,7 @@ Por fim, esta seção irá apresentar a noção de linguagem dos prefixos e sufi
 	\end{eqnarray*}
 \end{definicao}
 
-Nos próximos capítulos deste documento irão ser apresentadas as formalizações da ideia de linguagens formais na visão ``mecânica'' de Turing \cite{turing1937}. Entretanto, em vez de apresentar de forma direta os conceitos ligados as máquinas de Turing e as computações por elas realizadas, este documento opta por fazer um estudo seguindo a ideia dos livros texto de linguagens formais \cite{benjaLivro2010, linz2006, menezes1998LFA}, assim sendo, aqui serâo apresentadas as linguagens formais da mais simples para a mais complexas seguindo a hierarquia de Chomsky \cite{chomsky1956}, ou seja, serão aqui estudadas as linguagens formais na seguintes ordem: regulares, livres do contexto, recursivas e recursivamente enumeráveis.
+Nos próximos capítulos deste documento irão ser apresentadas as formalizações da ideia de linguagens formais na visão ``mecânica'' de Turing \cite{turing1937}. Entretanto, em vez de apresentar de forma direta os conceitos ligados as máquinas de Turing e as computações por elas realizadas, este documento opta por fazer um estudo seguindo a ideia dos livros texto de linguagens formais \cite{benjaLivro2010, linz2006, menezes1998LFA}, assim sendo, aqui serâo apresentadas as linguagens formais da mais simples para a mais complexa seguindo a hierarquia de Chomsky \cite{chomsky1956}, ou seja, serão aqui estudadas as linguagens formais na seguintes ordem: regulares, livres do contexto, recursivas e recursivamente enumeráveis.
 
 \section{Sobre Gramática Formais}\label{sec:FormalGrammar}
 
@@ -398,14 +398,14 @@ Como dito em \cite{benjaLivro2010}, dado uma gramática formal $G$ sempre que ho
 Desde que $\vdash^*$ é de fato uma relação pode-se facilmente que a igualdade entre derivações nada mais é do que a igualdade entre tuplas ordenadas.
 
 \begin{definicao}[Linguagem de uma gramática]\label{def:LinaugemGramatica}
-	Dado uma gramática $G = \langle V, \Sigma, S, P \rangle$ a linguagem gerada por $G$, denotada por $\mathcal{L}(G)$, corresponde ao conjunto formado por todas as palavras sobre $\Sigma$ que são deriváveis a partir do variável inicial da gramática, ou seja, $\mathcal{L}(G) = \{w \in \Sigma^* \mid S \vdash^* w\}$.
+	Dado uma gramática $G = \langle V, \Sigma, S, P \rangle$ a linguagem gerada por $G$, denotada por $\mathcal{L}(G)$, corresponde ao conjunto formado por todas as palavras sobre $\Sigma$ que são deriváveis a partir da variável inicial da gramática, ou seja, $\mathcal{L}(G) = \{w \in \Sigma^* \mid S \vdash^* w\}$.
 \end{definicao}
 
 \begin{exemplo}
 	Não é difícil verificar que a gramática do Exemplo \ref{exe:GramaticaFormal1} gera a linguagem $\{w \in \{a\}^* \mid |w| = 2k, k \in \mathbb{N}\}$.
 \end{exemplo}
 
-Agora o leitor pode ter notado que como gramática formais possuem um conjunto finito de regras, as linguagens por elas geradas nada mais são do que conjuntos indutivamente gerados.
+Agora o leitor pode ter notado que, como gramáticas formais possuem um conjunto finito de regras, as linguagens por elas geradas nada mais são do que conjuntos indutivamente gerados.
 
 \section{Questionário}\label{sec:Questionario1part4}
 
