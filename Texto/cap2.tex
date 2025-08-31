@@ -862,4 +862,20 @@ Agora usando as definições de $\delta_\lambda$ e $\widehat{\delta_\lambda}$ po
 	\end{eqnarray}
 \end{definicao}
 
+\section{Questionário}\label{sec:Questionario2part1}
 
+\begin{questao}\label{exer:AF1}
+	Seja $L \subseteq \Sigma$ para um alfabeto $\Sigma$ qualquer com $\# \in \Sigma$, demonstre que todas as linguagens a seguir são regulares.
+\end{questao}
+
+\begin{exerList}
+	\item $L_1 = \{\#^{|w|} \in \Sigma^* \mid w \in L\}$.
+	\item $L_2 = \{d_{\#}(w) \in \Sigma^* \mid w \in L\}$, onde $d_{\#}(w)$ corresponde a uma palavra $w' \in \Sigma^*$, de forma que $w'$ é a forma reduzida de $w$ após remover todos os $\#$.
+	\item $L_3 = \{x \in \Sigma^* \mid x,y \in L \land y \in \Sigma^*\}$.
+	\item $L_4 = \{y \in \Sigma^* \mid x,y \in L \land x \in \Sigma^*\}$.
+	\item $L_5 = \{x \in \Sigma^* \mid x,y \in L \land x \in \Sigma^*\}$.
+	\item $L_6 = \{xy \in \Sigma^* \mid x,y \in \Sigma^* \land yx \in L\}$.
+	\item $L_7 = \{w \in \Sigma^* \mid www \in L\}$.
+	\item $L_8 = \{x \in L \mid xy \in L \Longleftrightarrow y = \lambda\}$.
+	\item $L_9 = \{xy \in L \mid y \in L \Longleftrightarrow x = \lambda\}$.
+\end{exerList}
