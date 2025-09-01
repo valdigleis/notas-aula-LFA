@@ -862,6 +862,514 @@ Agora usando as definições de $\delta_\lambda$ e $\widehat{\delta_\lambda}$ po
 	\end{eqnarray}
 \end{definicao}
 
+\begin{exemplo}
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se a seguinte computação para a palavra ``$10$'':
+	\begin{eqnarray}\label{eq:ExemLAFN1}
+		\widehat{\underline{\delta_N}}(q_0, 10) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, 1)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))\nonumber\\
+		& = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, 1)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))
+	\end{eqnarray}
+	mas,
+	\begin{eqnarray}\label{eq:ExemLAFN2}
+		\widehat{\underline{\delta_N}}(q_0, 1) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, \lambda)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\nonumber\\
+		& = & \bigcup_{q' \in \delta_\lambda(q_0)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\nonumber\\
+		& = & \bigcup_{q' \in \{q_0, q_1, q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\\
+		& = & \widehat{\delta_\lambda}(\{q_1, q_2\})\nonumber\\
+		& = & \{q_0, q_1, q_2\}\nonumber
+	\end{eqnarray}
+	substituindo o valor da Equação (\ref{eq:ExemLAFN2}) na Equação (\ref{eq:ExemLAFN1}) tem-se que, 
+	\begin{eqnarray*}
+		\widehat{\underline{\delta_N}}(q_0, 10) & = & \bigcup_{q' \in \{q_0, q_1, q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))\\
+		& = & \{q_0, q_1, q_2\}
+	\end{eqnarray*}
+\end{exemplo}
+
+Assim como para o caso dos AFN uma palavra qualquer $w \in \Sigma^*$ será dita aceita por um $\lambda$-AFN quando a computação da palavra $w$ para em pelo menos um estado final, ou seja, $w$ é reconhecida pelo $\lambda$-AFN sempre que $\widehat{\underline{\delta_N}}(q_0, w) \cap F \neq \emptyset$, e assim pode-se definir formalmente a noção de linguagem para os $\lambda$-AFN.
+
+\begin{definicao}[Linguagem de um $\lambda$-AFN]\label{def:LinguagelLAFN}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN a linguagem aceita por $A$, denotado por $\mathcal{L}(A)$, corresponde ao seguinte conjunto $\mathcal{L}(A) = \{w \in \Sigma^* \mid \widehat{\underline{\delta_N}}(q_0, w) \cap F \neq \emptyset\}$.
+\end{definicao}
+
+Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem $L$ são similares ao mesmo aspectos com respeito aos AFN.
+
+\begin{exemplo}\label{exe:LinguagemLAFN1}
+	O $\lambda$-AFN representado pelo grafo de transição da Figura \ref{fig:Linguagem-LAFN1} a seguir reconhece a linguagem $L = \{w \in \{1,2,3\}^* \mid w = 1^i2^j3^k \text{ com } i,j,k \in \mathbb{N}\}$.
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]						(A)               	{$s_0$};
+			\node[state]								(B) [right of=A] 	{$s_1$};
+			\node[state, accepting]				        (C) [right of=B] 	{$s_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [loop above]  				node 		 {$1$} 		 ( )
+			(A) edge 			  				node 		 {$\lambda$} (B)
+			(B) edge [loop above]  				node 		 {$2$} 		 ( )
+			(B) edge 			  				node 		 {$\lambda$} (C)
+			(C) edge [loop above]  				node 		 {$3$} 		 ( );
+		\end{tikzpicture}
+		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN1}.}
+		\label{fig:Linguagem-LAFN1}
+	\end{figure}
+\end{exemplo}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.7cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$s_0$};
+		\node[state, accepting]				(B) [right of=A]	{$s_3$};
+		\node[state] 						(C) [above of=B] 	{$s_1$};
+		\node[state] 						(D) [below of=B] 	{$s_2$};
+		\node[state]						(E) [right of=B] 	{$s_5$};
+		\node[state] 						(F) [above of=E] 	{$s_4$};
+		\node[state] 						(G) [right of=D] 	{$s_6$};
+		
+		
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)  [loop right]  
+		(A) edge  							node 		 {$\lambda$}	 (C)
+		(A) edge  							node 		 {$\lambda$}	 (D)
+		(A) edge  							node 		 {$b$}	 		 (B)
+		(B) edge [loop right]  				node 		 {$a,b$}		 ( )
+		(C) edge [bend left]				node 		 {$a$}			 (F)
+		(C) edge							node		 {$b$}			 (B)
+		(F) edge [bend left]				node 		 {$a$}			 (C)
+		(D) edge							node		 {$a$}			 (G)
+		(G) edge							node		 {$a$}			 (E)
+		(E) edge							node		 {$a$}			 (D)
+		(D) edge							node		 {$b$}			 (B);
+	\end{tikzpicture}
+	\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2}.}
+	\label{fig:Linguagem-LAFN2}
+\end{figure}
+
+\begin{exemplo}\label{exe:LinguagemLAFN2}
+	O $\lambda$-AFN representado pelo grafo de transição esboçado pela Figura \ref{fig:Linguagem-LAFN2}, aceita a linguagem $L = \{uv \mid u \in \{a\}^*, |u|_a = 2k\text{ ou } |u|_a = 3k, v=bx, x \in \{a,b\}^*, k \in \mathbb{N}\}$.
+\end{exemplo}
+
+\begin{teorema}[Transformação $\lambda$-AFN-AFD]\label{teo:LAFN-AFD}
+	Se $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A$, então existe um  AFD $A'$ tal que $L = \mathcal{L}(A')$.
+\end{teorema}
+
+\begin{prova}
+  Suponha que $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A =  \langle Q, \Sigma, \underline{\delta_N}, q_0, F \rangle$ agora defina o seguinte o autômato $A' = \langle \wp(Q), \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$ onde para todo $X \in \wp(Q)$ tem-se que $X \in F'$ se, e somente se, $X \cap F \neq \emptyset$, e além disso, para todo $X \in \wp(Q)$ e $a \in \Sigma$ tem-se:
+	\begin{eqnarray}\label{eq:LAFN-AFD}
+		\delta(X, a) & = & \bigcup_{q \in X} \widehat{\delta_\lambda}\Big(\underline{\delta_N}(q, a)\Big)
+	\end{eqnarray}
+	por essa construção obviamente esse autômato é um AFD\footnote{A prova desse fato fica como exercício ao leitor.}. Agora será mostrado por indução sobre o tamanho de $w \in \Sigma^*$ que:
+	$$\widehat{\delta}(\delta_\lambda(q_0), w) = \widehat{\underline{\delta_N}}(q_0, w)$$
+  \begin{itemize}
+    \item[ ] \textbf{(B)}ase: Quando $|w| = 0$ isto é $w = \lambda$ tem-se trivialmente pela definição das funções de transição estendidas que, 
+		\begin{eqnarray*}
+			\widehat{\delta}(\delta_\lambda(q_0), \lambda) & = & \delta_\lambda(q_0)\\
+			& = & \widehat{\underline{\delta_N}}(q_0, \lambda)
+		\end{eqnarray*}
+    \item[ ] \textbf{(H)}ipótese indutiva: Suponha que para todo $w \in \Sigma^*$ com $|w| \geq 0$ tem-se que $\widehat{\delta}(\delta_\lambda(q_0), w) = \widehat{\underline{\delta_N}}(q_0, w)$.
+		\item[ ] \textbf{(P)}asso indutivo: Dado $w = ua$ com $u \in \Sigma^*$, $|u| \geq 0$ e $a \in \Sigma$ tem-se que, 
+		\begin{eqnarray*}
+			\widehat{\delta}(\delta_\lambda(q_0), w) & = & \widehat{\delta}(\delta_\lambda(q_0), ua)\\
+			& = & \delta(\widehat{\delta}(\delta_\lambda(q_0), u), a)\\
+			& \stackrel{\textbf{(HI)}}{=} & \delta(\widehat{\underline{\delta_N}}(q_0, w), a)\\
+			& \stackrel{Eq. (\ref{eq:LAFN-AFD})}{=} & \bigcup_{q \in \widehat{\underline{\delta_N}}(q_0, w)} \widehat{\delta_\lambda}\Big(\underline{\delta_N}(q, a)\Big)\\
+			& = & \widehat{\underline{\delta_N}}(q_0, ua)\\
+			& = & \widehat{\underline{\delta_N}}(q_0, w)
+		\end{eqnarray*}
+    Agora por  \textbf{(B)}, \textbf{(H)} e \textbf{(P)} pode-se efetivamente enunciar que $w \in \mathcal{L}(A)$ se, e somente se, $w \in \mathcal{L}(A')$, ou seja, $L = \mathcal{L}(A')$ o que completa a prova.
+  \end{itemize}
+\end{prova}
+
+\begin{teorema}[Transformação AFD-$\lambda$-AFN]\label{teo:AFD-LAFN}
+	Se $L = \mathcal{L}(A)$ para algum AFD $A$, então existe um $\lambda$-AFN $A'$ tal que $L = \mathcal{L}(A')$.
+\end{teorema}
+
+\begin{prova}
+	Trivial e ficará como exercício ao leitor.
+\end{prova}
+
+\begin{corolario}\label{col:RegularLAFN}
+	Uma linguagem $L$ é regular se, e somente se, existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$.
+\end{corolario}
+
+\begin{prova}
+	$(\Rightarrow)$ Assuma que $L$ é regular, assim por definição existe um AFD $A'$ tal que $L = \mathcal{L}(A')$, entretanto, pelo Teorema \ref{teo:AFD-LAFN} existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$. $(\Leftarrow)$ Suponha que $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A$, agora pelo Teorema \ref{teo:LAFN-AFD} existe um AFD $A'$ tal que $L = \mathcal{L}(A')$, e portanto, por definição $L$ é regular.
+\end{prova}
+
+Assim como para o caso da transformação de AFN em AFD, o processo de usar a construção do conjunto das partes no Teorema \ref{teo:LAFN-AFD} possui a desvantagem de gera estados inacessíveis. Mas como discutido em \cite{benja-2011, benja-2015, hopcroft2008, linz2006}, algumas simples modificações no Algoritmo \ref{alg:LAFN-AFD} fazem com que o novo algoritmo gerado seja capaz de remover as $\lambda$-transições e não sejam produzidos estados inacessíveis a seguir é apresentado este novo algoritmo.
+
+\begin{algorithm}[h]
+	\Entrada{Um $\lambda$-AFN $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$}
+	\Saida{Um AFD $A' = \langle Q', \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$}
+	\Inicio{
+		Inicialize os conjuntos $Q_u$ e  $Q'$  com o  estado rotulado por $\delta_\lambda(q_0)$\\
+		Inicialize o conjunto $F'$ como sendo vazio\\
+		\Repita{$Q_u = \emptyset$}{
+			Selecione um estado $X \in Q_u$\\
+			\ParaCada{$a \in \Sigma$}{
+				Determine o conjunto $\displaystyle Y = \widehat{\delta_\lambda}\Big(\bigcup_{q \in X} \underline{\delta_N}(q, a)\Big)$\\
+				\Se{$Y \notin Q'$}{
+					Adicione um estado rotulado por $Y$ em $Q'$ e em $Q_u$\\
+				}
+				Defina a transição $\delta(X, a) = Y$\\
+			}
+			Remova $X$ de $Q_u$
+		}
+		\ParaCada{$X \in Q'$}{
+			\Se{$X \cap F \neq \emptyset$}{
+				Adicione $X$ ao conjunto $F'$
+			}
+		}
+		\Retorna{$A' = \langle Q', \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$}
+	}
+	\caption{Algoritmo para remoção de $\lambda$-transições de um $\lambda$-AFN.}
+	\label{alg:LAFN-AFD}
+\end{algorithm}
+
+\begin{exemplo}
+	Aplicando o Algoritmo \ref{alg:LAFN-AFD} ao $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2} é obtido como saída o AFD:
+  $$D = \langle \{A_0, A_1, A_2, A_3, A_4, A_5, A_6, A_7, \emptyset\}, \{a,b\}, \delta, \{s_0, s_1, s_2\}, F' \rangle$$ 
+  onde tem-se que: 
+  \begin{eqnarray*}
+    A_0 & = & \{s_0, s_1, s_2\}\\ 
+    A_1 & = & \{s_4, s_6\}\\ 
+    A_2 & = & \{s_3\}\\
+    A_3 & = & \{s_1, s_5\}\\ 
+    A_4 & = & \{s_2, s_4\}\\
+    A_5 & = & \{s_1, s_6\}\\
+    A_6 & = & \{s_4, s_5\}\\
+    A_7 & = & \{s_1, s_2\}
+  \end{eqnarray*}
+  sendo $F' = \{A_2\}$ e $\delta$ é descrito pela Tabela a seguir
+
+	\begin{table}[H]
+    \centering
+    \begin{tabular}{c|cc}
+      \hline
+      \diagbox{$Q$}{$\Sigma$}& $a$ & $b$\\
+      \hline
+      $A_0$ & $A_1$ & $A_2$\\
+      $A_1$ & $A_3$ & $\emptyset$\\
+      $A_2$ & $A_2$ & $A_2$\\
+      $A_3$ & $A_4$ & $A_2$\\
+      $A_4$ & $A_5$ & $A_2$\\
+      $A_5$ & $A_6$ & $A_2$\\
+      $A_6$ & $A_7$ & $\emptyset$\\
+      $A_7$ & $A_1$ & $A_2$\\
+      $\emptyset$ & $\emptyset$ & $\emptyset$\\
+      \hline
+      \end{tabular}
+      \caption{Tabela da função de transição do AFD obtido a partir da aplicação do Algoritmo \ref{alg:LAFN-AFD} ao $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2}.}
+  \end{table}
+\end{exemplo}
+
+Nestas últimas seções foram usados os símbolos $\delta, \delta_N$ e $\underline{\delta_N}$ para denotar as funções de transições dos AFD, AFN e $\lambda$-AFN respectivamente, entretanto, o motivo disto foi por questões puramente didáticos, para ajudar o entendimento na conversão entre os tipos de autômatos, mas é comum encontrar na literatura (ver \cite{benjaLivro2010, hopcroft2008, linz2006}) que independente do tipo de autômato, sua função de transição será sempre representada apenas por $\delta$.
+
+\section{Teorema Myhill-Nerode e a  minimização de AFD}\label{sec:minimizacao-automatos}
+
+Até agora este manuscrito se preocupou com a tarefa de saber se uma linguagem pode ou não ser reconhecida por um autômato finito,  seja ele determinístico ou não-determinístico. Nesta seção será apresentada ao leitor a questão de eficiência no reconhecimento de linguagens em relação aos autômatos finitos, aqui será mostrado que o problema de encontrar um menor AFD que reconhece uma linguagem $L$ é decidível. 
+
+Na teoria dos autômatos quando se usa a palavra ``menor'', se está querendo dizer simplesmente aquele com o menor número possível de estados, ou seja, o AFD mínimo.  Mais adiante será aqui provado, que esse AFD mínimo é único a menos de isomorfismo, ou seja, se dois AFD reconhecem a mesma linguagem, cada um tendo o menor número possível de estados, então eles são são isomórficos. Isso significa que cada linguagem regular está associada com um AFD mínimo. 
+
+Este resultado da existência de um AFD mínimo recebe o nome de \textbf{Teorema Myhill-Nerode}, em homenagem aos matemáticos John Myhill\sidefootnote{O professor Myhill também é conhecido por seu Teorema de isomorfismo\cite{myhill1957-isomorfismo}, que pode ser visto como um análogo dentro da teoria da computabilidade ao teorema de Cantor-Bernstein-Schroeder e pelo famoso pelo Teorema  de Rice-Myhill-Shapiro, mais comumente conhecido como Teorema de Rice \cite{benjaLivro2010, rice1953-teorema-Rice}.} (1923-1987) e Anil Nerode (1932-), que o provaram na Universidade de Chicago em 1958 no artigo \cite{nerode1958}, de forma geral tal resultado fornece as condições suficientes e necessárias para que uma linguagem $L$ seja regular, para construir tal resultado antes é necessário considerar algumas definições básicas e alguns resultados auxiliares.
+
+
+\begin{definicao}[A família $\mathcal{H}_L$]\label{def:FamiliaH-L}
+	Seja $L$ uma linguagem qualquer\footnote{Não necessariamente regular.} sobre o alfabeto $\Sigma$, para qualquer palavra $w$ é definido o conjunto $L_w = \{x \mid wx \in L\}$. A família $\{L_w \mid w \in \Sigma^*\}$ construída sobre $L$ será denotada por $\mathcal{H}_L$, ou seja, $\mathcal{H}_L = \{L_w \mid w \in \Sigma^*\}$
+\end{definicao}
+
+Com respeito aos conjuntos $L_w$ o leitor mais atento pode notar que $L_\lambda = L$, além disso,  os conjuntos $L_w$ também apresentam a seguinte propriedade básica.
+
+\begin{proposicao}
+  Dado $L \subseteq \Sigma^*$. Se $L_w = L_{w'}$, então $L_{wa} = L_{w'a}$ para todo $a \in \Sigma$.
+\end{proposicao}
+
+\begin{prova}
+	Suponha que $L_w = L_{w'}$, assim para todo $a \in \Sigma^*$ tem-se que:
+	\begin{eqnarray*}
+		x \in L_{wa} &\Longleftrightarrow & wax \in L\\
+		& \Longleftrightarrow  & ax \in L_w\\
+		& \stackrel{Hip.}{\Longleftrightarrow} & ax \in L_{w'}\\
+		& \Longleftrightarrow  & x \in L_{w'a}
+	\end{eqnarray*}
+	concluindo a prova.
+\end{prova}
+
+Um fato importante sobre AFD que será usado a seguir e que não foi mencionado diretamente até agora é o exposto pelo resultado a seguir.
+
+\begin{proposicao}\label{prop:AssociatividadeDelta}
+	Se $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ é um AFD, então $\widehat{\delta}(q_0, uv) = \widehat{\delta}( \widehat{\delta}(q_0, u), v)$ para todo $u,v \in \Sigma^*$.
+\end{proposicao}
+
+\begin{prova}
+	A prova é por indução sobre o tamanho da palavra $uv$ e ficará como exercício ao leitor.
+\end{prova}
+
+O lema a seguir mostra que $\# \mathcal{H}_L$ é na verdade um limite inferior para o número de estados em um AFD. 
+
+\begin{lema}\label{lema:LimiteInferiorEstados}
+	Se $L = \mathcal{L}(A)$ para algum AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, então $\# \mathcal{H}_L \leq |Q|$.
+\end{lema}
+
+\begin{prova}
+	Suponha que $L = \mathcal{L}(A)$ para algum AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, agora para todo $q \in Q$ defina um novo AFD $A_q$ igual ao anterior em todos os aspectos menos no estado inicial pois este será o estado $q$, ou seja,  $A_q = \langle Q, \Sigma, \delta, q, F\rangle$. Agora para toda palavra $w \in \Sigma^*$ suponha que $\widehat{\delta}(q_0, w) = q$, por definição note que, 
+	\begin{eqnarray*}
+		x \in L_w & \stackrel{Def. \ \ref{def:FamiliaH-L}}{\Longleftrightarrow} & wx \in L\\
+		& \Longleftrightarrow & wx \in \mathcal{L}(A)\\
+		& \Longleftrightarrow & \widehat{\delta}(q_0, wx) \in F\\
+		& \stackrel{Prop. \ \ref{prop:AssociatividadeDelta}}{\Longleftrightarrow} & \widehat{\delta}(\widehat{\delta}(q_0, w), x) \in F\\
+		& \stackrel{Hip.}{\Longleftrightarrow} & \widehat{\delta}(q, x) \in F\\
+		& \Longleftrightarrow & x \in \mathcal{L}(A_q)
+	\end{eqnarray*}
+	Dessa forma tem-se que $\mathcal{L}(A_q) = L_w$, e obviamente $\mathcal{L}(A_{q_0}) = L$. Desde que  $A$ é fixo, tem-se que $L_w$ depende apenas do estado obtido quando a computação $w$ começa em $q_0$, e assim o número de $L_w$ distintos, ou seja, os elementos de $\mathcal{H}_L$ não pode ser maior que o número de estados em $A$, portanto, $\#\mathcal{H}_L \leq |Q|$.
+\end{prova}
+
+O próximo lema estabelece que para alguma linguagem $L$ no caso $\mathcal{H}_L$ ser finito, então sua cardinalidade será o limite superior no número de estados em um AFD capaz de reconhecer $L$.
+
+\begin{lema}\label{lema:LimiteSuperiorEstados}
+	Seja $L \subseteq \Sigma^*$. Se $\mathcal{H}_L$ é finito, então existe um AFD $A _L$ tal que $L = \mathcal{L}(A_L)$ e $A_L$ possui exatamente $\#\mathcal{H}_L$ estados.
+\end{lema}
+
+\begin{prova}
+	Dado $L \subseteq \Sigma^*$ assuma que $\mathcal{H}_L$ é finito, dito isto pode-se construir o seguinte AFD $A_L = \langle \mathcal{H}_L, \Sigma, \delta, q_0, F \rangle$ onde:
+	\begin{eqnarray}\label{eq:EstadoInicial}
+		q_0 = L
+	\end{eqnarray}
+	e para todo $L_w \in \mathcal{H}_L$ e $a \in \Sigma$ tem-se
+	\begin{eqnarray}\label{eq:Delta-AL}
+		\delta(L_w, a) = L_{wa}
+	\end{eqnarray}
+	e
+	\begin{eqnarray}\label{eq:EstadosFinais}
+		F = \{L_w \in \mathcal{H}_L \mid \lambda \in L_w\}
+	\end{eqnarray}
+	sobre a definição de $A_L$ por indução sobre o tamanho de $w \in \Sigma^*$ pode-se facilmente verificar que, 
+	\begin{eqnarray}\label{eq:DeltaEstendido-AL}
+		\widehat{\delta}(q_0, w) = L_w
+	\end{eqnarray}
+	além disso, claramente $A_L$ possui exatamente $\#\mathcal{H}_L$ estados, dito isto, note que:
+	\begin{eqnarray*}
+		w \in L & \stackrel{Def. \ \ref{def:FamiliaH-L}}{\Longleftrightarrow} & \lambda \in L_w\\
+		& \stackrel{Eq. (\ref{eq:EstadosFinais})}{\Longleftrightarrow} & L_w \in F\\
+		& \stackrel{Eq. (\ref{eq:DeltaEstendido-AL})}{\Longleftrightarrow} & \widehat{\delta}(q_0, w) \in F\\
+		& \Longleftrightarrow & w \in \mathcal{L}(A_L)
+	\end{eqnarray*}
+	e portanto, $L = \mathcal{L}(A_L)$ concluindo assim a prova.
+\end{prova}
+
+\begin{definicao}[Dimensão de um AFD]
+	Seja $A = \langle Q, \Sigma, \delta', q_0, F \rangle$ um AFD a dimensão de $A$, denotado por $dim(A)$, é igual a quantidade de estados em $A$, isto é, $dim(A) = \# Q$. 
+\end{definicao}
+
+\begin{definicao}[AFD Mínimo]
+	Seja $L$ uma linguagem regular tal que $L = \mathcal{L}(A)$ para algum um AFD $A$. O AFD $A$ será dito ser mínimo se, e somente se,  para todo outro AFD $B$ tal que $L= \mathcal{L}(B)$ tem-se que $dim(A) \leq dim(B)$. 
+\end{definicao}
+
+O próximo resultado mostra que não existe nenhum autômato como menos estados que o AFD construído na prova do Lema \ref{lema:LimiteSuperiorEstados}, ou seja, o método de construção mostrado na  na prova do Lema \ref{lema:LimiteSuperiorEstados} gera o AFD mínimo de qualquer linguagem.
+
+\begin{lema}\label{lema:UnicadadeMinAFD}
+	Seja $L$ uma linguagem regular, assim o  AFD $A_L$ construído no Lema \ref{lema:LimiteSuperiorEstados} é o único (a menos de isomorfismo) mínimo AFD que aceita $L$.
+\end{lema}
+
+\begin{prova}
+	Suponha que existe outro AFD mínimo $N = \langle Q, \Sigma, \delta', q'_0, F' \rangle$ tal que $L = \mathcal{L}(N)$ diferente do AFD $A_L = \langle \mathcal{H}_L, \Sigma, \delta, L, F \rangle$ construído na prova do Lema \ref{lema:LimiteSuperiorEstados}. Agora será definida uma função $f: Q \rightarrow \mathcal{H}_L$ definida simplesmente como: 
+	\begin{eqnarray*}
+		f(q) & = & \left\{\begin{array}{ll}	L, & \hbox{se } q = q_0\\	\mathcal{L}(A_q),  & \hbox{senão}\end{array}\right.
+	\end{eqnarray*}
+	para todo $q \in Q$, onde $\mathcal{L}(A_q)$ é da mesma forma que na prova do Lema \ref{lema:LimiteInferiorEstados} onde o AFD fixo é exatamente $A_L$. Por esta definição é claro que: 
+	\begin{itemize}
+		\item[(1)] Se $q_i \neq q_j$, então tem-se que $f(q_i) \neq f(q_j)$, consequentemente a função $f$ é injetora.
+		\item[(2)] $f$ preserva a condição de estado inicial.
+		\item[(3)] Para $a \in \Sigma, w \in \Sigma^*$ e $q, p \in Q$ assuma que $\delta(q, a) = p$ e $f(q) = \mathcal{L}(A_q) = L_w$ assim para qualquer $u \in \Sigma^*$ tem-se que
+		\begin{eqnarray*}
+			u \in f(p) & \Longleftrightarrow & u \in \mathcal{L}(A_p)\\
+			& \Longleftrightarrow &  \widehat{\delta}(p, u) \in F\\
+			& \Longleftrightarrow &  \widehat{\delta}(\widehat{\delta}(q, a), u) \in F\\
+			& \Longleftrightarrow &  \widehat{\delta}(q, au) \in F\\
+			& \Longleftrightarrow &  au \in \mathcal{L}(A_q)\\
+			& \Longleftrightarrow &  au \in f(q)\\
+			& \Longleftrightarrow &  au \in L_w\\
+			& \Longleftrightarrow &  wau \in L\\
+			& \Longleftrightarrow &  u \in L_{wa}
+		\end{eqnarray*} 
+		portanto, $f(p) = L_{wa}$, ou seja, $f$ preserva transições\footnote{Isto é o mesmo que dizer que $f(\delta'(q, a)) = \delta(f(q), a)$.}.
+		\item[(4)] Agora note que pela definição de estado final e pela construção de $A_L$ tem-se que 
+		$$q \in F' \Longleftrightarrow \widehat{\delta}(q, \lambda) \in F' \Longleftrightarrow  \lambda \in \mathcal{L}(A_q) \Longleftrightarrow \mathcal{L}(A_q) \in F \Longleftrightarrow f(q) \in F$$
+		portanto, a função $f$ preserva estados finais.
+		\item[(5)] Agora dado $w \in \Sigma^*$ assuma que $\widehat{\delta}(q_0, w) = q$, assim pela prova do Lema \ref{lema:LimiteInferiorEstados} para todo $L_w \in \mathcal{H}_L$, ou seja, para todo $L_w \in Ima(f)$ tem-se que $L_w = \mathcal{L}(A_q)$, e portanto, pela definição de $f$ tem-se que existe $q \in D	om(f)$ tal que $L_w = f(q)$, ou seja, $f$ é sobrejetora.
+	\end{itemize}
+	Desde que $f$ é injetora e sobrejetora tem-se que $f$ é uma bijeção, e portanto, $\#Q = \#\mathcal{H}_L$, logo $dim(N) = dim(A_L)$. Agora desde que $f$ preserva o estado inicial, os estados finais e as transições tem-se que $f$ é um isomorfismo do AFN $N$ para o AFD $A_L$, e portanto, eles são o mesmo AFD se diferenciando apenas pela rotulação dos seus estados. 
+\end{prova}
+
+Pode-se agora finalmente enunciar o Teorema Myhill-Nerode que estabelece uma caracterização para as linguagens regulares.
+
+\begin{teorema}[Teorema Myhill-Nerode]\label{teo:Myhill-Nerode}
+	Uma linguagem $L \subseteq \Sigma^*$ será regular se, e somente se, $\mathcal{H}_L$ é finito e existe um AFD mínimo $A$ com exatamente $\# \mathcal{H}_L$ estados tal que $\mathcal{L}(A) = L$.
+\end{teorema}
+
+\begin{prova}
+	Direto dos Lemas \ref{lema:LimiteInferiorEstados}, \ref{lema:LimiteSuperiorEstados} e \ref{lema:UnicadadeMinAFD}.
+\end{prova}
+
+Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode não é interessante para fins de implementação. Na prática, são adotados os modelos de construção baseados em tabelas de estados distintos, como é o caso dos algoritmos de descrito pela primeira vez em 1956 por Edward Moore \cite{erickson2014, moore1956}\sidefootnote{A critério de curiosidade, se o AFD não possui estados inacessíveis, então o algoritmo de minimização de Moore roda em complexidade $O(\#Q^2\#\Sigma)$.} e do algoritmo de Hopcroft \cite{hopcroft1971}. Neste texto será apresentado o algoritmo de Moore. Como o algoritmo de Moore ẽ baseado em equivalência de estados, para efetuar e redução é interessante apresentar alguns resultados sobre classes de equivalência de estados em AFD.
+
+\begin{definicao}[Estados Equivalentes]\label{def:EquivalenciaEstados}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. A relação de equivalência entre dois estados $q, q' \in Q$ será denotado por $q \equiv q'$ e será verdadeira quando para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(q', w) \in F$.
+\end{definicao}
+
+O resultado a seguir diz que se dois estados são equivalentes, então seus sucessores também o são.
+
+\begin{lema}\label{lema:SucessoresEquivalentes}
+	Dado um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Se $q \equiv q'$, então $\delta(q, a) \equiv \delta(q', a)$.
+\end{lema}
+
+\begin{prova}
+	Dado $a \in \Sigma$, por contrapositiva será mostrado que: 
+	\begin{center}
+		Se $\delta(q, a) \not\equiv \delta(q', a)$, então $q \not\equiv q'$. 
+	\end{center}
+	Inicialmente assuma que $\delta(q, a) \not\equiv \delta(q', a)$, assim pela Definição \ref{def:EquivalenciaEstados} existe um $w \in \Sigma^*$ tal que um dos dois casos a seguir acontece:
+	\begin{itemize}
+		\item[(1)] $\widehat{\delta}(\delta(q, a), w)  \in F$ e $\widehat{\delta}(\delta(q', a), w)  \notin F$ ou
+		\item[(2)] $\widehat{\delta}(\delta(q, a), w)  \notin F$ e $\widehat{\delta}(\delta(q', a), w)  \in F$.
+	\end{itemize}
+	em particular quando $w = \lambda$, para o primeiro caso (a prova é similar para o caso (2)) tem-se pela Definição \ref{def:DeltaEstendido} que:
+	\begin{eqnarray*}
+		\widehat{\delta}(\delta(q, a), w)  \in F \text{ e } \widehat{\delta}(\delta(q', a), w)  \notin F \Longleftrightarrow \delta(q, a)  \in F \text{ e }\delta(q', a)  \notin F
+	\end{eqnarray*}
+	e desde que $a \in \Sigma^*$ pela Definição \ref{def:EquivalenciaEstados} tem-se que $q \not\equiv q'$, o que conclui a prova da contrapositiva. Desde que a contrapositiva é verdadeira tem-se que afirmação original ``Se $q \equiv q'$, então $\delta(q, a) \equiv \delta(q', a)$'' é também verdadeira.
+\end{prova}
+
+\begin{teorema}\label{teo:ExtensaoDeltaEstrela}
+	Seja  $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta_{/\equiv}, [q_0],  F_{/\equiv}\rangle$ o AFD quociente obtido a partir de um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, com $\delta_{/\equiv}([q], a) = [\delta(q, a)]$ para todo $q \in Q$ e $a \in \Sigma$, tem-se que, para todo $w \in \Sigma^*$ que $\widehat{\delta_{/\equiv}}([q], w) = [\widehat{\delta}(q, w)]$.
+\end{teorema}
+
+\begin{prova}
+	Por indução sobre o tamanho de $w \in \Sigma^*$ será mostrado a seguinte igualdade $\widehat{\delta_{/\equiv}}([q], w) = [\widehat{\delta}(q, w)]$.
+	\begin{itemize}
+		\item[ ] \textbf{(B)}ase: Quando $|w| = 0$ ($w = \lambda$) tem-se trivialmente que $\widehat{\delta_{/\equiv}}([q], \lambda) = [q] = [\widehat{\delta}(q, \lambda)]$.
+		
+		\item[ ] \textbf{(H)}ipótese indutiva: Suponha que para todo $w \in \Sigma^*$ com $|w| \geq 0$ tem-se que $\widehat{\delta_{/\equiv}}([q], w) = [\widehat{\delta}(q, w)]$.
+		\item[ ] \textbf{(P)}asso indutivo: Dado $w = ua$ com $u \in \Sigma^*$, $|u| \geq 0$ e $a \in \Sigma$ tem-se que, 
+		\begin{eqnarray*}
+			\widehat{\delta_{/\equiv}}([q], w) & = & \widehat{\delta_{/\equiv}}([q], ua)\\
+			& = & \delta_{/\equiv}(\widehat{\delta_{/\equiv}}([q], u),a)\\
+			& \stackrel{\textbf{(HI)}}{=} & \delta_{/\equiv}([\widehat{\delta}(q, u)],a)\\
+			& = & [\delta(\widehat{\delta}(q, u),a)]\\
+			& = & [\widehat{\delta}(q, ua)]\\
+			& = & [\widehat{\delta}(q, w)]
+		\end{eqnarray*}
+	\end{itemize}
+	Agora por  \textbf{(B)}, \textbf{(H)} e \textbf{(P)} pode-se efetivamente enunciar  que para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta_{/\equiv}}([q], w) = [\widehat{\delta}(q, w)]$, o que completa a prova.
+\end{prova}
+
+\begin{teorema}\label{teo:FinalQuociente}
+	Seja  $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta_{/\equiv}, [q_0],  F_{/\equiv}\rangle$ o AFD quociente obtido a partir de um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, tem-se que $q \in F$ se, e somente se, $[q] \in F_{/\equiv}$
+\end{teorema}
+
+\begin{prova}
+	$(\Rightarrow)$ Trivial pela própria definição de $ F_{/\equiv}$. $(\Leftarrow)$ É suficiente mostrar que se $q \equiv p$ e $q \in F$, então $p \in F$. Para provar isto, suponha que $q \equiv p$ e $q \in F$, mas note que $q \in F \Longleftrightarrow \widehat{\delta}(q, \lambda) \in F$, mas como $q \equiv p$, por definição tem-se para todo $w \in \Sigma^*$ que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(p, w) \in F$, assim no particular quando $w = \lambda$ tem-se que  $\widehat{\delta}(p, \lambda) \in F$, mas $\widehat{\delta}(p, \lambda) = p$, portanto, $p \in F$.
+\end{prova}
+
+\begin{teorema}\label{teo:LinguagemQuociente}
+	Seja  $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta_{/\equiv}, [q_0],  F_{/\equiv}\rangle$ o AFD quociente obtido a partir de um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Então $\mathcal{L}(A_{/\equiv}) = \mathcal{L}(A)$.
+\end{teorema}
+
+\begin{prova}
+	Basta notar que para qualquer $w \in \Sigma^*$ tem-se que:
+	\begin{eqnarray*}
+		w \in \mathcal{L}(A_{/\equiv}) & \Longleftrightarrow & \widehat{\delta_{/\equiv}}([q_0], w) \in F_{/\equiv}\\
+		& \stackrel{Teo. \ \ref{teo:ExtensaoDeltaEstrela}}{\Longleftrightarrow} & [\widehat{\delta}(q_0, w)] \in F_{/\equiv}\\
+		& \stackrel{Teo. \ \ref{teo:FinalQuociente}}{\Longleftrightarrow} & \widehat{\delta}(q_0, w) \in F\\
+		& \Longleftrightarrow & w \in \mathcal{L}(A)
+	\end{eqnarray*}
+	Portanto, $\mathcal{L}(A_{/\equiv}) = \mathcal{L}(A)$.
+\end{prova}
+
+
+Usando a definição de equivalência entre estados, apresentada anteriormente, pode-se a seguir será apresentar a definição de estados distinguíveis.
+
+\begin{definicao}\label{def:Estados-distinguiveis}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD, dois estados $q_i, q_j \in Q$ são ditos distinguíveis, sempre que $q_i$ não for equivalente a $q_j$.
+\end{definicao}
+
+Note que pela Definição \ref{def:Estados-distinguiveis} dois estados $q_i$ e $q_j$ serão sempre distinguíveis em qualquer um dos casos a seguir:
+
+\begin{itemize}
+	\item[(1)] $q_i \in F$ e $q_j \notin F$ ou
+	\item[(2)] $q_i \notin F$ e $q_j \in F$ ou
+	\item[(3)] Para algum $w \in \Sigma^*$ acontece que $\delta(q_i, w) \notin F$ e $\delta(q_j, w) \in F$ ou $\delta(q_i, w) \in F$ e $\delta(q_j, w) \notin F$.
+\end{itemize}
+
+Usando os casos (1) e (2), pode-se implementar um algoritmo auxiliar que será usando no Algoritmo de Moore, esse algoritmo auxiliar tem o objetivo de descobrir estados candidatos a serem equivalentes em um AFD, e obviamente este algoritmo roda em $O(\#Q^2)$.
+
+\begin{algorithm}[H]
+	\Entrada{Um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$}
+	\Saida{Uma matriz $M$ de candidatos a serem equivalentes}
+	\Inicio{
+		Defina uma matriz $M$ de ordem $\#Q \times \#Q$\\
+		\ParaCada{$q_i \in Q$}{
+			\ParaCada{$q_j \in Q$}{
+				\Se{($q_i \in F$ e $q_j \notin F$) ou ($q_i \notin F$ e $q_j \in F$)}{
+					Marque a posição $M_{i,j}$ com um $X$
+				}
+			}
+		}
+		\Retorna{$M$}
+	}
+	\caption{Algoritmo para gerar a matriz de candidatos a serem estados equivalentes.}
+	\label{alg:AFD-MatrizCandidatosEquivalentes}
+\end{algorithm}
+
+Agora passando a matriz de candidatos $M$ gerada pelo algoritmo e o AFD que gerou tal matriz pode-se usar o algoritmo a seguir para encontrar todos os estados equivalentes (usando a terceira condição de estados distinguiveis) e então minimizar o AFD.
+
+\begin{algorithm}[H]
+	\Entrada{Um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ e a matriz de candidatos equivalentes $M$}
+	\Saida{A matriz de estados equivalentes $M$}
+	\Inicio{
+		Defina uma matriz $M$ de ordem $\#Q \times \#Q$\\
+		\ParaCada{$q_j \in Q$}{
+			\ParaCada{$q_j \in Q$}{
+				\Se{$M_{i,j}$ não estiver marcado}{
+					\ParaCada{$q_j \in Q$}{
+						\Se{$\delta(q_i, a) \not\equiv \delta(q_j, a)$}{
+							Marque a posição $M_{i,j}$ com um $X$\\
+						}
+					}
+				}
+			}
+		}
+		\Retorna{$M$}
+	}
+	\caption{Algoritmo de minimização de Moore.}
+	\label{alg:Moore}
+\end{algorithm}
+
+O Algoritmo de Moore encontra todos os estados equivalentes, agora basta construir o AFD $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta_{/\equiv}, [q_0],  F_{/\equiv}\rangle$ usando as seguintes regras: 
+
+\begin{enumerate}
+	\item Para todo $q \in Q$ a classe $[q] = [p \in Q \mid M_{q, p} \mbox{ não está marcada com } X]$.
+	\item Para todo $[q] \in Q_{/\equiv}$ e $a \in \Sigma$, tem-se que $\delta_{/\equiv}([q], a) = [\delta(q, a)]$.
+\end{enumerate}
+
+Como apontado por \cite{erickson2014}, existem alternativas mais eficientes para a minimização de autômatos, tal como o algoritmo de Hopcroft que roda em $O(\#\Sigma \#Q \log \#Q)$, entretanto, neste texto é adotado o algoritmo de Moore pela familiaridade que os alunos já possuem com este último, uma vez que, ele é visto de forma direta (ou as vezes indireta) nas disciplinas de circuitos digitais.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Questionário}\label{sec:Questionario2part1}
 
 \begin{questao}\label{exer:AF1}
