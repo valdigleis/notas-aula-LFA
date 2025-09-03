@@ -1067,7 +1067,7 @@ Assim como para o caso da transformação de AFN em AFD, o processo de usar a co
 
 Nestas últimas seções foram usados os símbolos $\delta, \delta_N$ e $\underline{\delta_N}$ para denotar as funções de transições dos AFD, AFN e $\lambda$-AFN respectivamente, entretanto, o motivo disto foi por questões puramente didáticos, para ajudar o entendimento na conversão entre os tipos de autômatos, mas é comum encontrar na literatura (ver \cite{benjaLivro2010, hopcroft2008, linz2006}) que independente do tipo de autômato, sua função de transição será sempre representada apenas por $\delta$.
 
-\section{Teorema Myhill-Nerode e a  minimização de AFD}\label{sec:minimizacao-automatos}
+\section{Teorema Myhill-Nerode e o Autômato Mínimo}\label{sec:Teorema-MyHill-Nerode}
 
 Até agora este manuscrito se preocupou com a tarefa de saber se uma linguagem pode ou não ser reconhecida por um autômato finito,  seja ele determinístico ou não-determinístico. Nesta seção será apresentada ao leitor a questão de eficiência no reconhecimento de linguagens em relação aos autômatos finitos, aqui será mostrado que o problema de encontrar um menor AFD que reconhece uma linguagem $L$ é decidível. 
 
@@ -1213,13 +1213,15 @@ Pode-se agora finalmente enunciar o Teorema Myhill-Nerode que estabelece uma car
 	Direto dos Lemas \ref{lema:LimiteInferiorEstados}, \ref{lema:LimiteSuperiorEstados} e \ref{lema:UnicadadeMinAFD}.
 \end{prova}
 
-Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode não é interessante para fins de implementação. Na prática, são adotados os modelos de construção baseados em tabelas de estados distintos, como é o caso dos algoritmos de descrito pela primeira vez em 1956 por Edward Moore \cite{erickson2014, moore1956}\sidefootnote{A critério de curiosidade, se o AFD não possui estados inacessíveis, então o algoritmo de minimização de Moore roda em complexidade $O(\#Q^2\#\Sigma)$.} e do algoritmo de Hopcroft \cite{hopcroft1971}. Neste texto será apresentado o algoritmo de Moore. Como o algoritmo de Moore ẽ baseado em equivalência de estados, para efetuar e redução é interessante apresentar alguns resultados sobre classes de equivalência de estados em AFD.
+\section{Algoritmos de Minimização de AFD}
+
+Na seção anterior foi apresentado o Teorema Myhill-Nerode, que garante a existência de um AFD mínimo para cada uma das linguagens regulares. Neste seção serão apresentados dois métodos alternativos para encontrar o AFD mínimo a partir um AFD dado. Esse métodos são algoritmos baseados na ideia de estados distinguiveis, o primeiro deles a ser apresentado aqui é o algoritmo descrito pela primeira vez em 1956 por Edward Moore \cite{erickson2014, moore1956}\sidefootnote{A critério de curiosidade, se o AFD não possui estados inacessíveis, então o algoritmo de minimização de Moore roda em complexidade $O(\#Q^2\#\Sigma)$.}, em seguida será apresentado o algoritmo de Hopcroft \cite{hopcroft1971}, apresentado inicialmente em 1971.
 
 \begin{definicao}[Estados Equivalentes]\label{def:EquivalenciaEstados}
 	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. A relação de equivalência entre dois estados $q, q' \in Q$ será denotado por $q \equiv q'$ e será verdadeira quando para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(q', w) \in F$.
 \end{definicao}
 
-O resultado a seguir diz que se dois estados são equivalentes, então seus sucessores também o são.
+Antes de apresentar os algoritmos em si, como esse texto foi escrito para aulas em um curso de Ciência da Computação, acho por pertinente, apresentar alguns resultados a respeitos de estados equivalêntes de um AFD, o primeiro resultado, apresentado a seguir, diz que se dois estados são equivalentes, então seus sucessores também o são.
 
 \begin{lema}\label{lema:SucessoresEquivalentes}
 	Dado um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Se $q \equiv q'$, então $\delta(q, a) \equiv \delta(q', a)$.
@@ -1288,8 +1290,7 @@ O resultado a seguir diz que se dois estados são equivalentes, então seus suce
 	Portanto, $\mathcal{L}(A_{/\equiv}) = \mathcal{L}(A)$.
 \end{prova}
 
-
-Usando a definição de equivalência entre estados, apresentada anteriormente, pode-se a seguir será apresentar a definição de estados distinguíveis.
+O Teorema \ref{teo:LinguagemQuociente} é uma excelente justificativa para os algoritmos que iremos apresentar a seguir, pois ambos os algoritmos constroem extamente o AFD  $A_{/\equiv}$ a partir de um AFD $A$ dado como entrada. Para o funcionamento dos algoritmo de Moore em especial, é necessário definição de estados distinguíveis, tal definição (apresentada a seguir) é construída a partir da definição de equivalência entre estados.
 
 \begin{definicao}\label{def:Estados-distinguiveis}
 	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD, dois estados $q_i, q_j \in Q$ são ditos distinguíveis, sempre que $q_i$ não for equivalente a $q_j$.
@@ -1313,7 +1314,7 @@ Usando os casos (1) e (2), pode-se implementar um algoritmo auxiliar que será u
 		\ParaCada{$q_i \in Q$}{
 			\ParaCada{$q_j \in Q$}{
 				\Se{($q_i \in F$ e $q_j \notin F$) ou ($q_i \notin F$ e $q_j \in F$)}{
-					Marque a posição $M_{i,j}$ com um $X$
+					Marque a posição $M_{i,j}$ com um {$\checkmark$}
 				}
 			}
 		}
@@ -1323,7 +1324,9 @@ Usando os casos (1) e (2), pode-se implementar um algoritmo auxiliar que será u
 	\label{alg:AFD-MatrizCandidatosEquivalentes}
 \end{algorithm}
 
-Agora passando a matriz de candidatos $M$ gerada pelo algoritmo e o AFD que gerou tal matriz pode-se usar o algoritmo a seguir para encontrar todos os estados equivalentes (usando a terceira condição de estados distinguiveis) e então minimizar o AFD.
+Notavelmente o Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} pode ser melhora de diversar formas, como por exemplo utilizar uma lista de adjacências em vez de uma matriz, como este texto não é foca em algoritmos e estrutura de dados isso não serão feito aqui, então será simplesmente considerado que o algoritmo usa uma matriz, entretanto, para facilitar a exibição nos exemplos só serão apresentados os elementos da matriz abaixo da diagonal principal.
+
+O Algoritmo \ref{alg:Moore} recebe a matriz de estados candidatos a serem equivalentes $M$, que foi gerada pelo Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} anterior e o AFD que gerou tal matriz, em seguida o algoritmo encontrar todos os pares de estados equivalentes (usando a terceira condição de estados distinguiveis) $(q, p)$, e marca esses pares de estados, todos os pares $(q, p)$ não marcados ao final da execução do algoritmo serão então equivalentes.
 
 \begin{algorithm}[H]
 	\Entrada{Um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ e a matriz de candidatos equivalentes $M$}
@@ -1335,7 +1338,7 @@ Agora passando a matriz de candidatos $M$ gerada pelo algoritmo e o AFD que gero
 				\Se{$M_{i,j}$ não estiver marcado}{
 					\ParaCada{$q_j \in Q$}{
 						\Se{$\delta(q_i, a) \not\equiv \delta(q_j, a)$}{
-							Marque a posição $M_{i,j}$ com um $X$\\
+							Marque a posição $M_{i,j}$ com um {$\checkmark$}\\
 						}
 					}
 				}
@@ -1350,24 +1353,478 @@ Agora passando a matriz de candidatos $M$ gerada pelo algoritmo e o AFD que gero
 O Algoritmo de Moore encontra todos os estados equivalentes, agora basta construir o AFD $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta_{/\equiv}, [q_0],  F_{/\equiv}\rangle$ usando as seguintes regras: 
 
 \begin{enumerate}
-	\item Para todo $q \in Q$ a classe $[q] = [p \in Q \mid M_{q, p} \mbox{ não está marcada com } X]$.
+	\item Para todo $q \in Q$ a classe $[q] = [p \in Q \mid M_{q, p} \mbox{ não está marcada com } \checkmark]$.
 	\item Para todo $[q] \in Q_{/\equiv}$ e $a \in \Sigma$, tem-se que $\delta_{/\equiv}([q], a) = [\delta(q, a)]$.
 \end{enumerate}
 
-Como apontado por \cite{erickson2014}, existem alternativas mais eficientes para a minimização de autômatos, tal como o algoritmo de Hopcroft que roda em $O(\#\Sigma \#Q \log \#Q)$, entretanto, neste texto é adotado o algoritmo de Moore pela familiaridade que os alunos já possuem com este último, uma vez que, ele é visto de forma direta (ou as vezes indireta) nas disciplinas de circuitos digitais.
+\begin{exemplo}\label{exe:Minimizacao1}
+	Considerando o AFD descrito na Figura \ref{fig:AFDminimo1} a seguir, tal AFD reconhece a linguagem $L = \{w \in \{0, 1\}^* \mid w = u11v, u, v \in \{0, 1\}^*\}$.
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=2em}, thick ]
+			\node[state, initial]				(0)               {$q_0$};
+			\node[state]								(1) [below of=0] 	{$q_1$};
+			\node[state]				        (2) [right of=0] 	{$q_2$};
+			\node[state]				        (3) [below of=1] 	{$q_3$};
+			\node[state]				        (5) [below of=2] 	{$q_5$};
+			\node[state, accepting]     (9) [right of=5] 	{$q_9$};
+			\node[state]								(4) [below of=9] 	{$q_4$};
+			\node[state, accepting]     (6) [right of=4] 	{$q_6$};
+			\node[state, accepting]     (7) [above of=9] 	{$q_7$};
+			\node[state, accepting]     (8) [right of=7] 	{$q_8$};
+			\path[->] (0) +(-1,0) edge (0)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			%(0) edge 			 				node [below] {$1$}		 (2)
+			% [bend left] 
+			(0) edge 			 				node {$1$}		 					(2)
+			(0) edge 			 				node {$0$}		 					(1)
+			(1) edge 			 				node [below] {$1$}			(4)
+			(1) edge 			 				node {$0$}		 					(3)
+			(2) edge 			 				node {$1$}		 					(9)
+			(2) edge 			 				node {$0$}		 					(5)
+			(3) edge 			 				node {$1$}		 					(4)
+			(3) edge [loop left]	node {$0$}		 					( )
+			(4) edge 			 				node [right]{$1$}				(9)
+			(4) edge [bend left]  node {$0$}		 					(5)
+			(5) edge [bend left]  node {$1$}		 					(4)
+			(5) edge 			 				node [below] {$0$}			(3)
+			(9) edge [loop left]	node {$1$}		 					( )
+			(9) edge 			 				node {$0$}		 					(8)
+			(8) edge [bend left]	node {$1$}		 					(7)
+			(8) edge 			 				node {$0$}		 					(6)
+			(7) edge [bend left]	node {$0$}		 					(8)
+			(7) edge 			 				node {$1$}		 					(9)
+			(6) edge [loop right]	node {$0$}		 					( )
+			(6) edge 			 				node {$1$}		 					(7);
+		\end{tikzpicture}
+		\caption{Um AFD.}
+		\label{fig:AFDminimo1}
+	\end{figure}
+
+	Agora aplicando o autômato da Figura \ref{fig:AFDminimo1} ao Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} é obtida a matriz de candidatos a estados equivalentes descrita visualmente a seguir.
 
 
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[every node/.style={minimum width=0.5cm, minimum height=0.5cm, inner sep=0pt},x=0.5cm, y=0.5cm]
+			% Rótulos das colunas (0 a 8)
+			\foreach \j in {0,...,8} {
+					\node at (\j + 0.5, 9.5) {$q_{\j}$};
+			}
+		
+			% Rótulos das linhas (1 a 9)
+			\foreach \i in {1,...,9} {
+					\node at (-0.5, 9.5 - \i) {$q_{\i}$};
+			}
+		
+			% Desenha a grade
+			% Linhas de 1 a 9, Colunas de 0 a 8
+			\foreach \i in {1,...,9} { % Linhas
+					\foreach \j in {0,...,8} { % Colunas
+							% A célula só existe se j < i
+							% A célula (i,j) no seu diagrama corresponde a (\j, 9-\i) no sistema de coordenadas.
+							% A borda diagonal segue a regra de que o número da coluna (j) deve ser menor que o número da linha (i)
+							% ou seja, para uma matriz triangular inferior.
+		
+							% Ajuste para a forma do seu diagrama
+							% A primeira linha (i=1) tem apenas a célula para j=0
+							% A segunda linha (i=2) tem células para j=0, 1
+							% E assim por diante, até a nona linha (i=9) com células para j=0 a 8
+							\pgfmathsetmacro{\maxcol}{\i} % Para cada linha 'i', o número máximo de colunas é 'i'
+							\ifnum\j < \maxcol % Verifica se a coluna está dentro dos limites para a linha atual
+									\draw[dotted] (\j, 9-\i) rectangle (\j+1, 10-\i);
+							\fi
+					}
+			}
+		
+			% Desenha a borda externa e a diagonal principal
+			% As coordenadas foram ajustadas para corresponder aos rótulos e à forma
+			\draw[line width=1pt]
+				(0,9) -- (0,0) -- (9,0) % Base e lateral esquerda
+				-- (9,1) -- (8,1) % Escalonamento da diagonal
+				-- (8,2) -- (7,2)
+				-- (7,3) -- (6,3)
+				-- (6,4) -- (5,4)
+				-- (5,5) -- (4,5)
+				-- (4,6) -- (3,6)
+				-- (3,7) -- (2,7)
+				-- (2,8) -- (1,8)
+				-- (1,9) -- (0,9); % Volta para o início
+		
+			% Adiciona os 'X's pretos (ajustando coordenadas para o novo sistema)
+			% Coordenadas são (coluna + 0.5, 9 - linha + 0.5)
+			\node at (0.5, 3.5) {$\checkmark$};
+			\node at (1.5, 3.5) {$\checkmark$};
+			\node at (2.5, 3.5) {$\checkmark$};
+			\node at (3.5, 3.5) {$\checkmark$};
+			\node at (4.5, 3.5) {$\checkmark$};
+			\node at (5.5, 3.5) {$\checkmark$};
+
+			\node at (0.5, 2.5) {$\checkmark$};
+			\node at (1.5, 2.5) {$\checkmark$};
+			\node at (2.5, 2.5) {$\checkmark$};
+			\node at (3.5, 2.5) {$\checkmark$};
+			\node at (4.5, 2.5) {$\checkmark$};
+			\node at (5.5, 2.5) {$\checkmark$};
+
+			\node at (0.5, 1.5) {$\checkmark$};
+			\node at (1.5, 1.5) {$\checkmark$};
+			\node at (2.5, 1.5) {$\checkmark$};
+			\node at (3.5, 1.5) {$\checkmark$};
+			\node at (4.5, 1.5) {$\checkmark$};
+			\node at (5.5, 1.5) {$\checkmark$};
+
+			\node at (0.5, 0.5) {$\checkmark$};
+			\node at (1.5, 0.5) {$\checkmark$};
+			\node at (2.5, 0.5) {$\checkmark$};
+			\node at (3.5, 0.5) {$\checkmark$};
+			\node at (4.5, 0.5) {$\checkmark$};
+			\node at (5.5, 0.5) {$\checkmark$};
+		\end{tikzpicture}
+		\caption{Matriz de estados do AFD da Figura \ref{fig:AFDminimo1} candidatos a serem equivalentes.}
+		\label{tab:AutomatoMinimo1}
+	\end{figure}
+
+	Todas as posições $(q_i, q_j)$ marcadas com {$\checkmark$} informam que os estados $q_i$ e $q_j$ foram detectados não equivalentes pelo Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes}, em especial observe que os estados $q_0$ e $q_6$ de fato não podem ser equivalentes visto que $q_0 \notin F$ e $q_6 \in F$, por outro lado, como os estados $q_6, q_8 \in F$ eles são candidatos a serem equivalentes, então não existe uma marca na posição
+correspondente, assim como também não há uma marca na posição referente aos estados $q_0$ e $q_2$. Passando o autômato e a matriz representada na Figura  \ref{tab:AutomatoMinimo1} para Algoritmo de Moore (Algoritmo \ref{alg:Moore}) tem-se que matriz será atualizada, ficando na forma abaixo.
+
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[every node/.style={minimum width=0.5cm, minimum height=0.5cm, inner sep=0pt},x=0.5cm, y=0.5cm]
+			% Rótulos das colunas (0 a 8)
+			\foreach \j in {0,...,8} {
+					\node at (\j + 0.5, 9.5) {$q_{\j}$};
+			}
+		
+			% Rótulos das linhas (1 a 9)
+			\foreach \i in {1,...,9} {
+					\node at (-0.5, 9.5 - \i) {$q_{\i}$};
+			}
+		
+			% Desenha a grade
+			% Linhas de 1 a 9, Colunas de 0 a 8
+			\foreach \i in {1,...,9} { % Linhas
+					\foreach \j in {0,...,8} { % Colunas
+							% A célula só existe se j < i
+							% A célula (i,j) no seu diagrama corresponde a (\j, 9-\i) no sistema de coordenadas.
+							% A borda diagonal segue a regra de que o número da coluna (j) deve ser menor que o número da linha (i)
+							% ou seja, para uma matriz triangular inferior.
+		
+							% Ajuste para a forma do seu diagrama
+							% A primeira linha (i=1) tem apenas a célula para j=0
+							% A segunda linha (i=2) tem células para j=0, 1
+							% E assim por diante, até a nona linha (i=9) com células para j=0 a 8
+							\pgfmathsetmacro{\maxcol}{\i} % Para cada linha 'i', o número máximo de colunas é 'i'
+							\ifnum\j < \maxcol % Verifica se a coluna está dentro dos limites para a linha atual
+									\draw[dotted] (\j, 9-\i) rectangle (\j+1, 10-\i);
+							\fi
+					}
+			}
+		
+			% Desenha a borda externa e a diagonal principal
+			% As coordenadas foram ajustadas para corresponder aos rótulos e à forma
+			\draw[line width=1pt]
+				(0,9) -- (0,0) -- (9,0) % Base e lateral esquerda
+				-- (9,1) -- (8,1) % Escalonamento da diagonal
+				-- (8,2) -- (7,2)
+				-- (7,3) -- (6,3)
+				-- (6,4) -- (5,4)
+				-- (5,5) -- (4,5)
+				-- (4,6) -- (3,6)
+				-- (3,7) -- (2,7)
+				-- (2,8) -- (1,8)
+				-- (1,9) -- (0,9); % Volta para o início
+		
+			% Adiciona os 'X's pretos (ajustando coordenadas para o novo sistema)
+			% Coordenadas são (coluna + 0.5, 9 - linha + 0.5)
+			\node at (0.5, 3.5) {$\checkmark$};
+			\node at (1.5, 3.5) {$\checkmark$};
+			\node at (2.5, 3.5) {$\checkmark$};
+			\node at (3.5, 3.5) {$\checkmark$};
+			\node at (4.5, 3.5) {$\checkmark$};
+			\node at (5.5, 3.5) {$\checkmark$};
+
+			\node at (0.5, 2.5) {$\checkmark$};
+			\node at (1.5, 2.5) {$\checkmark$};
+			\node at (2.5, 2.5) {$\checkmark$};
+			\node at (3.5, 2.5) {$\checkmark$};
+			\node at (4.5, 2.5) {$\checkmark$};
+			\node at (5.5, 2.5) {$\checkmark$};
+
+			\node at (0.5, 1.5) {$\checkmark$};
+			\node at (1.5, 1.5) {$\checkmark$};
+			\node at (2.5, 1.5) {$\checkmark$};
+			\node at (3.5, 1.5) {$\checkmark$};
+			\node at (4.5, 1.5) {$\checkmark$};
+			\node at (5.5, 1.5) {$\checkmark$};
+
+			\node at (0.5, 0.5) {$\checkmark$};
+			\node at (1.5, 0.5) {$\checkmark$};
+			\node at (2.5, 0.5) {$\checkmark$};
+			\node at (3.5, 0.5) {$\checkmark$};
+			\node at (4.5, 0.5) {$\checkmark$};
+			\node at (5.5, 0.5) {$\checkmark$};
+
+			\node[red] at (0.5, 7.5) {$\checkmark$}; % Linha 2, Coluna 0
+			\node[red] at (1.5, 7.5) {$\checkmark$}; % Linha 2, Coluna 1
+			\node[red] at (2.5, 6.5) {$\checkmark$}; % Linha 3, Coluna 2
+			\node[red] at (0.5, 5.5) {$\checkmark$}; % Linha 4, Coluna 0
+			\node[red] at (1.5, 5.5) {$\checkmark$}; % Linha 4, Coluna 1
+			\node[red] at (3.5, 5.5) {$\checkmark$}; % Linha 4, Coluna 3
+			\node[red] at (2.5, 4.5) {$\checkmark$}; % Linha 5, Coluna 2
+			\node[red] at (4.5, 4.5) {$\checkmark$}; % Linha 5, Coluna 4
+		\end{tikzpicture}
+		\caption{Matriz de estados equivalentes do AFD da Figura \ref{fig:AFDminimo1}.}
+		\label{tab:AutomatoMinimo2}
+	\end{figure}
+
+	Os símbolos $\checkmark$ vermelhos foram introduzido na execução do Algoritmo de Moore, agora com a tabela atualizada basta verificar as colunas para identificar os estados equivalentes, e assim construir as classes de equivalência, todos os estados (linhas) não marcado em um coluna $q_i$ são equivalentes ao estado $q_i$ assim pela matriz representada na Figura \ref{tab:AutomatoMinimo2} tem-se que,
+	\begin{align*}
+    [q_0] & = \{q_0, q_1, q_3, q_5\}\\
+    [q_2] & = \{q_2, q_4\}\\
+    [q_6] & = \{q_6, q_7, q_8, q_9\}
+	\end{align*}
+	e seguindo as regras para gerar a função de transição,
+	\begin{align*}
+			\delta([q_0], 1) & = [q_2]\\
+			\delta([q_0], 0) & = [q_0]\\
+			\delta([q_2], 1) & = [q_6]\\
+			\delta([q_2], 0) & = [q_0]\\
+			\delta([q_6], 1) & = [q_6]\\
+			\delta([q_6], 0) & = [q_6]
+	\end{align*}
+	e $F_{/\equiv} = \{[q_6]\}$, assim tem-se AFD mínimo descrito na Figura \ref{fig:AFDminimo2}.
+
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=2em}, thick ]
+			\node[state, initial]				(0)               {$[q_0]$};
+			\node[state]								(1) [right of=0] 	{$[q_2]$};
+			\node[state, accepting]     (2) [right of=1] 	{$[q_6]$};
+			\path[->] (0) +(-1,0) edge (0)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			%(0) edge 			 				node [below] {$1$}		 (2)
+			% [bend left] 
+			(0) edge [loop above]	node {$0$}		 					( )
+			(0) edge [bend left]  node {$1$}		 					(1)
+			(1) edge [bend left]  node {$0$}		 					(0)
+			(1) edge 			 				node {$1$}		 					(2)
+			(2) edge [loop above]	node {$0,1$}	 					( );
+		\end{tikzpicture}
+		\caption{Um AFD.}
+		\label{fig:AFDminimo2}
+	\end{figure}
+\end{exemplo}
+
+\begin{exemplo}
+	Considere o AFD representado pela Figura \ref{fig:AFDminimo3} a seguir.
+
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=2em}, thick ]
+			\node[state, initial]				(0)               {$q_0$};
+			\node[state, accepting]			(1) [right of=0] 	{$q_1$};
+			\node[state]     						(2) [right of=1] 	{$q_2$};
+			\node[state]     						(3) [below of=0] 	{$q_3$};
+			\node[state, accepting]			(4) [right of=3] 	{$q_4$};
+			\node[state]     						(5) [right of=4] 	{$q_5$};
+			\path[->] (0) +(-1,0) edge (0)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			%(0) edge 			 				node [below] {$1$}		 (2)
+			% [bend left] 
+			(0) edge [bend left]  node {$1$}		 					(1)
+			(0) edge [bend left]  node {$0$}		 					(3)
+			(1) edge [bend left]  node {$1$}			 				(0)
+			(1) edge [bend left]  node {$0$}			 				(2)
+			(2) edge [bend left]  node {$0$}		 					(1)
+			(2) edge [bend left]  node {$1$}		 					(5)
+			(3) edge [bend left]  node {$1$}		 					(4)
+			(3) edge [bend left]  node {$0$}		 					(0)
+			(4) edge [bend left]  node {$1$}		 					(3)
+			(4) edge [bend left]  node {$0$}		 					(5)
+			(5) edge [bend left]  node {$0$}		 					(4)
+			(5) edge [bend left]  node {$1$}		 					(2);
+		\end{tikzpicture}
+		\caption{Um AFD.}
+		\label{fig:AFDminimo3}
+	\end{figure}
+
+	Usando o Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} é obtida a seguinte matriz de candidatos a estados equivalentes,
+
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[every node/.style={minimum width=0.5cm, minimum height=0.5cm, inner sep=0pt},x=0.5cm, y=0.5cm]
+      % Rótulos das colunas (q_0 a q_4)
+      \foreach \j in {0,...,4} {
+          \node at (\j + 0.5, 5.5) {$q_{\j}$};
+      }
+    
+      % Rótulos das linhas (q_1 a q_5)
+      \foreach \i in {1,...,5} {
+          \node at (-0.5, 5.5 - \i) {$q_{\i}$};
+      }
+    
+      % Desenha a grade
+      % Linhas de 1 a 5, Colunas de 0 a 4
+      \foreach \i in {1,...,5} { % Linhas
+          \foreach \j in {0,...,4} { % Colunas
+              \pgfmathsetmacro{\maxcol}{\i}
+              \ifnum\j < \maxcol
+                  \draw[dotted] (\j, 5-\i) rectangle (\j+1, 6-\i);
+              \fi
+          }
+      }
+    
+      % Desenha a borda externa e a diagonal principal
+      \draw[line width=1pt]
+          (0,5) -- (0,0) -- (5,0)
+          -- (5,1) -- (4,1)
+          -- (4,2) -- (3,2)
+          -- (3,3) -- (2,3)
+          -- (2,4) -- (1,4)
+          -- (1,5) -- (0,5);
+    
+      % Coordenadas são (coluna + 0.5, 5 - linha + 0.5)
+      %\node[red] at (0.5, 4.5) {$\checkmark$}; % Linha 1, Coluna 0
+      %\node[red] at (1.5, 3.5) {$\checkmark$}; % Linha 2, Coluna 1
+      %\node[red] at (0.5, 2.5) {$\checkmark$}; % Linha 3, Coluna 0
+      %\node[red] at (2.5, 2.5) {$\checkmark$}; % Linha 3, Coluna 2
+
+      %\node at (3.5, 0.5) {$\checkmark$}; % Linha 5, Coluna 3
+      %\node at (4.5, 0.5) {$\checkmark$}; % Linha 5, Coluna 4
 
 
+			\node at (0.5, 4.5) {$\checkmark$};
+			\node at (0.5, 1.5) {$\checkmark$};
+
+			\node at (1.5, 0.5) {$\checkmark$};
+			\node at (1.5, 2.5) {$\checkmark$};
+			\node at (1.5, 3.5) {$\checkmark$};
+
+			\node at (2.5, 1.5) {$\checkmark$};
+
+			\node at (3.5, 1.5) {$\checkmark$};
+
+			\node at (4.5, 0.5) {$\checkmark$};
+    \end{tikzpicture}
+		\caption{Matriz de estados do AFD da Figura \ref{fig:AFDminimo3} candidatos a serem equivalentes.}
+		\label{tab:AutomatoMinimo3}
+	\end{figure}
+
+	Aplicando a matriz representada pela Figura \ref{tab:AutomatoMinimo3} ao algoritmo de Moore tal matriz será atualizada para a forma a seguir.
+
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[every node/.style={minimum width=0.5cm, minimum height=0.5cm, inner sep=0pt},x=0.5cm, y=0.5cm]
+      % Rótulos das colunas (q_0 a q_4)
+      \foreach \j in {0,...,4} {
+          \node at (\j + 0.5, 5.5) {$q_{\j}$};
+      }
+    
+      % Rótulos das linhas (q_1 a q_5)
+      \foreach \i in {1,...,5} {
+          \node at (-0.5, 5.5 - \i) {$q_{\i}$};
+      }
+    
+      % Desenha a grade
+      % Linhas de 1 a 5, Colunas de 0 a 4
+      \foreach \i in {1,...,5} { % Linhas
+          \foreach \j in {0,...,4} { % Colunas
+              \pgfmathsetmacro{\maxcol}{\i}
+              \ifnum\j < \maxcol
+                  \draw[dotted] (\j, 5-\i) rectangle (\j+1, 6-\i);
+              \fi
+          }
+      }
+    
+      % Desenha a borda externa e a diagonal principal
+      \draw[line width=1pt]
+          (0,5) -- (0,0) -- (5,0)
+          -- (5,1) -- (4,1)
+          -- (4,2) -- (3,2)
+          -- (3,3) -- (2,3)
+          -- (2,4) -- (1,4)
+          -- (1,5) -- (0,5);
+    
+      % Coordenadas são (coluna + 0.5, 5 - linha + 0.5)
+      %\node[red] at (0.5, 4.5) {$\checkmark$}; % Linha 1, Coluna 0
+      %\node[red] at (1.5, 3.5) {$\checkmark$}; % Linha 2, Coluna 1
+      %\node[red] at (0.5, 2.5) {$\checkmark$}; % Linha 3, Coluna 0
+      %\node[red] at (2.5, 2.5) {$\checkmark$}; % Linha 3, Coluna 2
+
+      %\node at (3.5, 0.5) {$\checkmark$}; % Linha 5, Coluna 3
+      %\node at (4.5, 0.5) {$\checkmark$}; % Linha 5, Coluna 4
 
 
+			\node at (0.5, 4.5) {$\checkmark$};
+			\node[red] at (0.5, 3.5) {$\checkmark$};
+			\node at (0.5, 1.5) {$\checkmark$};
+			\node[red] at (0.5, 0.5) {$\checkmark$};
 
+			\node at (1.5, 0.5) {$\checkmark$};
+			\node at (1.5, 2.5) {$\checkmark$};
+			\node at (1.5, 3.5) {$\checkmark$};
 
+			\node at (2.5, 1.5) {$\checkmark$};
+			\node[red] at (2.5, 2.5) {$\checkmark$};
 
+			\node at (3.5, 1.5) {$\checkmark$};
+			\node[red] at (3.5, 0.5) {$\checkmark$};
 
+			\node at (4.5, 0.5) {$\checkmark$};
+    \end{tikzpicture}
+		\caption{Matriz de estados equivalentes do AFD da Figura \ref{fig:AFDminimo3}.}
+		\label{tab:AutomatoMinimo4}
+	\end{figure}
 
+	Agora usando as regras de construção do AFD quociente após a aplicação do algoritmo de Moore ficamos com as seguintes classes de equivalência.
+	\begin{align*}
+    [q_0] & = \{q_0, q_3\}\\
+    [q_1] & = \{q_1, q_4\}\\
+    [q_2] & = \{q_2, q_5\}
+	\end{align*}
+	e seguindo as regras para gerar a função de transição tem-se,
+	\begin{align*}
+			\delta([q_0], 1) & = [q_1]\\
+			\delta([q_0], 0) & = [q_0]\\
+			\delta([q_1], 1) & = [q_0]\\
+			\delta([q_1], 0) & = [q_2]\\
+			\delta([q_2], 1) & = [q_2]\\
+			\delta([q_2], 0) & = [q_1]
+	\end{align*}
 
+	Logo o AFD quociente e da forma descrita pela Figura \ref{fig:AFDminimo4} a seguir.
 
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=2em}, thick ]
+			\node[state, initial]				(0)               {$[q_0]$};
+			\node[state, accepting]			(1) [right of=0] 	{$[q_1]$};
+			\node[state]     						(2) [right of=1] 	{$[q_2]$};
+			\path[->] (0) +(-1,0) edge (0)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			%(0) edge 			 				node [below] {$1$}		 (2)
+			% [bend left] 
+			(0) edge [bend left]  node {$1$}		 					(1)
+			(0) edge [loop above]	node {$0$}		 					( )
+			(1) edge [bend left]  node {$1$}			 				(0)
+			(1) edge [bend left]  node {$0$}			 				(2)
+			(2) edge [bend left]  node {$0$}		 					(1)
+			(2) edge [loop above]	node {$1$}		 					( );
+		\end{tikzpicture}
+		\caption{Um AFD.}
+		\label{fig:AFDminimo4}
+	\end{figure}
+\end{exemplo}
 
 
 \section{Questionário}\label{sec:Questionario2part1}
