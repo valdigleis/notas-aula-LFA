@@ -1324,7 +1324,7 @@ Usando os casos (1) e (2), pode-se implementar um algoritmo auxiliar que será u
 	\label{alg:AFD-MatrizCandidatosEquivalentes}
 \end{algorithm}
 
-Notavelmente o Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} pode ser melhora de diversar formas, como por exemplo utilizar uma lista de adjacências em vez de uma matriz, como este texto não é foca em algoritmos e estrutura de dados isso não serão feito aqui, então será simplesmente considerado que o algoritmo usa uma matriz, entretanto, para facilitar a exibição nos exemplos só serão apresentados os elementos da matriz abaixo da diagonal principal.
+Notavelmente o Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} pode ser melhorado de diversar formas, como por exemplo utilizar uma lista de adjacências em vez de uma matriz, como este texto não é foca em algoritmos e estrutura de dados isso não serão feito aqui, então será simplesmente considerado que o algoritmo usa uma matriz, entretanto, para facilitar a exibição nos exemplos só serão apresentados os elementos da matriz abaixo da diagonal principal.
 
 O Algoritmo \ref{alg:Moore} recebe a matriz de estados candidatos a serem equivalentes $M$, que foi gerada pelo Algoritmo \ref{alg:AFD-MatrizCandidatosEquivalentes} anterior e o AFD que gerou tal matriz, em seguida o algoritmo encontrar todos os pares de estados equivalentes (usando a terceira condição de estados distinguiveis) $(q, p)$, e marca esses pares de estados, todos os pares $(q, p)$ não marcados ao final da execução do algoritmo serão então equivalentes.
 
@@ -1826,10 +1826,85 @@ correspondente, assim como também não há uma marca na posição referente aos
 	\end{figure}
 \end{exemplo}
 
+Agora será apresentado o algoritmo de Hopcroft \cite{hopcroft1971} para minimiza um AFD dado, a ideia de Hopcroft é realizar o refinamento progressivo das partições do conjunto de estados, usando a ideia de blocos \sidefootnote{Que em última análise serão classes de equivalência}. O conceito é quebrar o conjunto de estados em subconjuntos contendo apenas estados equivalentes.	
+
+\begin{definicao}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD, um bloco é qualquer $X \subseteq Q$ tal que todos os $q_i \in X$ são do mesmo tipo\footnote{Tipo aqui corresponde a mesma ideia do algoritmo de Moore, ou seja, o tipo de estados finais e não-finais.}.
+\end{definicao}
+
 
 \section{Questionário}\label{sec:Questionario2part1}
 
+
 \begin{questao}\label{exer:AF1}
+	Para cada linguagem a seguir construa um AFD.
+\end{questao}
+
+\begin{exerList}
+	\item $L_1 = \{w \in \{a,b\}^* \mid w \text{ termina em } ab\}$.
+  \item $L_2 = \{w \in \{0, x, 1\}^* \mid w \text{ começa com } 1 \text{ mas não contém a subpalavra } 0xx1 \}$.
+  \item $L_3 = \{w \in \{1, 2, 0\}^* \mid w \text{ contém a subpalavra } 1201\}$.
+  \item $L_4 = \{w \in \{a,b\}^* \mid w = a^n \text{ com } n \in \mathbb{N} \text{ ou se existe } b \text{ em } w \text{, ele é seguido de aa}\}$.
+  \item $L_5 = \{w \in \{0,1\}^* \mid w \text{ não possui nem uma subpalavra } 0^{2n} \text{ com } n \in \mathbb{N}\}$.
+  \item $L_6 = \{w \in \{a,b, c\}^* \mid w \in \{b, c\}^* \text{ ou } \text{ todo } a \text{ em } w \text{ aparece entre } b \text{ e } c\}$.
+\end{exerList}
+
+\begin{questao}\label{exer:AF2}
+	Para cada linguagem a seguir construa um AFD, AFN ou $\lambda$-AFN que reconhecer a linguagem. Considerando que $N_a(w)$ corresponde ao número de $a \in \Sigma$ na palavra $w$.
+\end{questao}
+
+\begin{exerList}
+	\item $L_1 = \{w \in \{\circ, \star, 0, 1\}^* \mid N_\star(w) > 3 \land N_\circ(w) < 5\}$.
+  \item $L_2 = \{w \in \{0, x, 1\}^* \mid w N_x(w) = 6\}$.
+  \item $L_3 = \{u0^i1^jv \in \{1, 2, 0\}^* \mid u, v \in \{2\}^* \land  i + j = 2k + 1, k \in \mathbb{N}-\{0\}\}$.
+	\item $L_4 = \{ubv \mid u, v \in \{a, b, c\}^*, N_b(u) = 0 \land N_b(v) < 5\}$.
+\end{exerList}
+
+\begin{questao}\label{exer:AF3}
+	Considere que $\Sigma = \{0, 1\}$, para cada linguagem a seguir construa um AFD, AFN ou $\lambda$-AFN que reconhecer a linguagem descrita.
+\end{questao}
+
+\begin{exerList}
+	\item A linguagem de todas as palavras começando com $0$ e terminando com $1$ e que não apareça a sub-palavra $01010$.
+	\item A linguagem de todas as palavras começando com $10$ e que não possuem a sub-palavra $001$.
+	\item A linguagem de todas as palavras terminando com $(11)^2$ ou $(11)^4$. 
+	\item A linguagem de todas as palavras que possuem as sub-palavras $010$ ou $101$.
+\end{exerList}
+
+\begin{questao}\label{exer:AF4}
+	Considere que $\Sigma = \{a, b, c, d\}$ construa um AFD que reconhece a linguagem de todos os $w \in \Sigma^*$ tal que $w$ satisfaz as seguintes restrições.
+	\begin{itemize}
+		\item[(i)] $w$ nunca deve conter a subpalavra $abcd$;
+		\item[(ii)] Sempre que $w$ iniciar em $a$ obrigatoriamente deve terminar $cd$;
+		\item[(iii)] Se $w$ iniciar com $b$ então não deve conter a subpalavra $bc$ e 
+		\item[(iv)] $w$ sempre contém a subpalavra $ac$.  
+	\end{itemize}
+\end{questao}
+
+
+\begin{questao}\label{exer:AF5}
+	Considere que $\Sigma = \{0, 1\}$ construa um AFD que reconhece a linguagem de todos os $w \in \Sigma^*$ tal que $w$ satisfaz as seguintes restrições.
+	\begin{itemize}
+		\item[(i)] Sempre que $w$ iniciar com $00$ tem-se que $|w| < 10$;
+		\item[(ii)] Sempre que $w$ iniciar em $10$ obrigatoriamente deve terminar $00$;
+		\item[(iii)] Se $w$ iniciar com $01$ não deve conter a subpalavra $101$ e 
+		\item[(iv)] $w$ sempre deve ter tamanho par.  
+	\end{itemize}
+\end{questao}
+
+\begin{questao}\label{exer:AF6}
+	Considere que $\Sigma = \{0, 1\}$ construa um AFD que reconhece a linguagem de todos os $w \in \Sigma^*$ tal que $w$ satisfaz as seguintes restrições.
+	\begin{itemize}
+		\item[(i)] $w$ nunca inicia com $00$ ou $11$;
+		\item[(ii)] Sempre que $w$ deve possuir a subpalavra $101$ e também deve possuir a subpalavra $010$;
+		\item[(iii)] Em $w$ subpalavra $101$ e sempre aparece antees da subpalavra $010$;
+	\end{itemize}
+\end{questao}
+
+
+
+
+\begin{questao}\label{exer:AFx}
 	Seja $L \subseteq \Sigma$ para um alfabeto $\Sigma$ qualquer com $\# \in \Sigma$, demonstre que todas as linguagens a seguir são regulares.
 \end{questao}
 
