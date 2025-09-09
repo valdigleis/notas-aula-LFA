@@ -1110,7 +1110,7 @@ Um fato importante sobre AFD que será usado a seguir e que não foi mencionado 
 O lema a seguir mostra que $\# \mathcal{H}_L$ é na verdade um limite inferior para o número de estados em um AFD. 
 
 \begin{lema}\label{lema:LimiteInferiorEstados}
-	Se $L = \mathcal{L}(A)$ para algum AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, então $\# \mathcal{H}_L \leq |Q|$.
+	Se $L = \mathcal{L}(A)$ para algum AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, então $\# \mathcal{H}_L \leq \# Q$.
 \end{lema}
 
 \begin{prova}
@@ -1123,7 +1123,7 @@ O lema a seguir mostra que $\# \mathcal{H}_L$ é na verdade um limite inferior p
 		& \stackrel{Hip.}{\Longleftrightarrow} & \widehat{\delta}(q, x) \in F\\
 		& \Longleftrightarrow & x \in \mathcal{L}(A_q)
 	\end{eqnarray*}
-	Dessa forma tem-se que $\mathcal{L}(A_q) = L_w$, e obviamente $\mathcal{L}(A_{q_0}) = L$. Desde que  $A$ é fixo, tem-se que $L_w$ depende apenas do estado obtido quando a computação $w$ começa em $q_0$, e assim o número de $L_w$ distintos, ou seja, os elementos de $\mathcal{H}_L$ não pode ser maior que o número de estados em $A$, portanto, $\#\mathcal{H}_L \leq |Q|$.
+	Dessa forma tem-se que $\mathcal{L}(A_q) = L_w$, e obviamente $\mathcal{L}(A_{q_0}) = L$. Desde que  $A$ é fixo, tem-se que $L_w$ depende apenas do estado obtido quando a computação $w$ começa em $q_0$, e assim o número de $L_w$ distintos, ou seja, os elementos de $\mathcal{H}_L$ não pode ser maior que o número de estados em $A$, portanto, $\#\mathcal{H}_L \leq \# Q$.
 \end{prova}
 
 O próximo lema estabelece que para alguma linguagem $L$ no caso $\mathcal{H}_L$ ser finito, então sua cardinalidade será o limite superior no número de estados em um AFD capaz de reconhecer $L$.
@@ -1845,7 +1845,7 @@ Agora será apresentado o algoritmo de Hopcroft \cite{hopcroft1971} para minimiz
   \item $L_2 = \{w \in \{0, x, 1\}^* \mid w \text{ começa com } 1 \text{ mas não contém a subpalavra } 0xx1 \}$.
   \item $L_3 = \{w \in \{1, 2, 0\}^* \mid w \text{ contém a subpalavra } 1201\}$.
   \item $L_4 = \{w \in \{a,b\}^* \mid w = a^n \text{ com } n \in \mathbb{N} \text{ ou se existe } b \text{ em } w \text{, ele é seguido de aa}\}$.
-  \item $L_5 = \{w \in \{0,1\}^* \mid w \text{ não possui nem uma subpalavra } 0^{2n} \text{ com } n \in \mathbb{N}\}$.
+  \item $L_5 = \{w \in \{0,1\}^* \mid w \text{ não possui nem uma subpalavra } 0^{2n} \text{ com } n \in \mathbb{N} - \{0\}\}$.
   \item $L_6 = \{w \in \{a,b, c\}^* \mid w \in \{b, c\}^* \text{ ou } \text{ todo } a \text{ em } w \text{ aparece entre } b \text{ e } c\}$.
 \end{exerList}
 
@@ -1876,7 +1876,7 @@ Agora será apresentado o algoritmo de Hopcroft \cite{hopcroft1971} para minimiz
 	\begin{itemize}
 		\item[(i)] $w$ nunca deve conter a subpalavra $abcd$;
 		\item[(ii)] Sempre que $w$ iniciar em $a$ obrigatoriamente deve terminar $cd$;
-		\item[(iii)] Se $w$ iniciar com $b$ então não deve conter a subpalavra $bc$ e 
+		\item[(iii)] Se $w$ iniciar com $b$ então não deve conter a subpalavra $bc$;
 		\item[(iv)] $w$ sempre contém a subpalavra $ac$.  
 	\end{itemize}
 \end{questao}
@@ -1887,8 +1887,7 @@ Agora será apresentado o algoritmo de Hopcroft \cite{hopcroft1971} para minimiz
 	\begin{itemize}
 		\item[(i)] Sempre que $w$ iniciar com $00$ tem-se que $|w| < 10$;
 		\item[(ii)] Sempre que $w$ iniciar em $10$ obrigatoriamente deve terminar $00$;
-		\item[(iii)] Se $w$ iniciar com $01$ não deve conter a subpalavra $101$ e 
-		\item[(iv)] $w$ sempre deve ter tamanho par.  
+		\item[(iii)] Se $w$ iniciar com $01$ não deve conter a subpalavra $101$.
 	\end{itemize}
 \end{questao}
 
@@ -1896,13 +1895,40 @@ Agora será apresentado o algoritmo de Hopcroft \cite{hopcroft1971} para minimiz
 	Considere que $\Sigma = \{0, 1\}$ construa um AFD que reconhece a linguagem de todos os $w \in \Sigma^*$ tal que $w$ satisfaz as seguintes restrições.
 	\begin{itemize}
 		\item[(i)] $w$ nunca inicia com $00$ ou $11$;
-		\item[(ii)] Sempre que $w$ deve possuir a subpalavra $101$ e também deve possuir a subpalavra $010$;
-		\item[(iii)] Em $w$ subpalavra $101$ e sempre aparece antees da subpalavra $010$;
+		\item[(ii)] Sempre que $w$ possuir a subpalavra $101$ deve possuir a subpalavra  $010$ e
+		\item[(iii)] Em $w$ a subpalavra $101$ deve sempre aparece antes da subpalavra $010$;
 	\end{itemize}
 \end{questao}
 
+\begin{questao}\label{exer:AF7}
+	Considere que $\Sigma = \{a, c, t, g\}$ construa um AFD, AFN ou $\lambda$-AFN que reconhece a linguagem de todos os $w \in \Sigma^*$ tal que $w$ satisfaz as seguintes restrições.
+	\begin{itemize}
+		\item[(i)] Quando $w$ iniciar com $ag$ deve conter pelo menos duas subpalavra $tg$;
+		\item[(ii)] Quando $w$ possuir terminar em $tt$ deve possuir a subpalavra  $act$ e
+		\item[(iii)] Em $w$ a subpalavra $tc$ nunca acontece e
+		\item[(v)] $|w| \geq 4$. 
+	\end{itemize}
+\end{questao}
 
+\begin{questao}\label{exer:AF8}
+	Seja $M$ seu autômato construído para a Questão \ref{exer:AF6}, construa um AFD $M'$ tal que para todo $w \in \Sigma^*$ tem-se que $w \in \mathcal{L}(M)$ se, e somente se, $w^r \in \mathcal{L}(M')$. Ou seja, construa um AFD que reconhece a linguagem reversa do seu autômato da Questão \ref{exer:AF6}.
+\end{questao}
 
+\begin{questao}\label{exer:AF9}
+	Seja $M$ seu autômato construído para a Questão \ref{exer:AF7}, construa um AFD $M'$ tal que para todo $w \in \Sigma^*$ tem-se que $w \in \mathcal{L}(M)$ se, e somente se, $w^r \in \mathcal{L}(M')$. Ou seja, construa um AFD que reconhece a linguagem reversa do seu autômato da Questão \ref{exer:AF7}.
+\end{questao}
+
+\begin{questao}\label{exer:AF10}
+	Considerando as linguagens $L_1, L_2, L_3, L_4, L_5$ e $L_6$ descritas na Questão \ref{exer:AF1} e considerando as operações usuais de união $(\cup)$, interseção $(\cap)$ e complemento $(\overline{ \ \ })$, construa um AFD para as linguagens descritas abaixo.
+\end{questao}
+
+\begin{exerList}
+	\item $L_2 \cup L_3$.
+	\item $L_1 \cap L_4$.
+	\item $\overline{L_5}$.
+	\item $\overline{L_3 \cap L_5}$
+	\item $\overline{\overline{L_6} \cap L_1}$
+\end{exerList}
 
 \begin{questao}\label{exer:AFx}
 	Seja $L \subseteq \Sigma$ para um alfabeto $\Sigma$ qualquer com $\# \in \Sigma$, demonstre que todas as linguagens a seguir são regulares.

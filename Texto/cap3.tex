@@ -1,0 +1,82 @@
+\chapter{Linguagens Regulares: Modelos Alternativos}\label{cap:ExpressionsGrammars}
+
+\epigraph{``As far as I am aware this pronunciation is incorrect in all known languages. ''}{Kenneth Kleene, falando sobre a pronuncia do último no de seu Pai, Stephen Kleene.}
+
+No Capítulo \ref{cap:Automata} foi apresentado a classe das linguagens regulares $\mathcal{L}_{Reg}$ através da formalização dos autômatos finitos (em diversas classes distintas), entretanto, essa não é a única forma de apresentar e formalizar a classe de linguagens $\mathcal{L}_{Reg}$.  Neste capítulo serão apresentados dois modelos alternativos para tal classe de linguagens, sendo estes modelos, o modelo denotacional conhecido por expressões regulares \cite{menezes1998LFA}, e o modelo de gramática geradora \cite{chomsky1956}.
+
+\section{Gramática Regulares}\label{sec:GramaticaRegular}
+
+%Nas seções anteriores foi apresentado o formalismo denotacional (as expressões regulares), e mostrado sua equivalência com o formalismo mecânico (os autômatos). 
+Nesta seção será apresentado um terceiro formalismo para as linguagens regulares, sendo este um formalismo gerador (ou axiomático) \cite{menezes1998LFA}. 
+
+\begin{definicao}\label{def:GramaticaLinear}
+	Uma gramática formal $G = \langle V, \Sigma, S, P \rangle$ e dita Linear à Direta (à Esquerda), ou simplesmente GLD (GLE), se todas as suas produções são da forma, $A \rightarrow wB$ ($A \rightarrow Bw$), onde $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma^*$.
+\end{definicao}
+
+\begin{exemplo}
+	A gramática $G_1 = \langle \{B, S , A\}, \{a, b\}, S, P \rangle$ onde $P$ é formado pelas regras:
+	\begin{eqnarray*}
+		S & \rightarrow& aaB\\
+		B & \rightarrow& bb
+	\end{eqnarray*}
+	é uma GLD.
+\end{exemplo}
+
+\begin{exemplo}\label{exe:GLE1}
+	A gramática $G_1 = \langle \{X, S , Y\}, \{0, 1\}, S, P \rangle$ onde $P$ é formado pelas regras:
+	\begin{eqnarray*}
+		S & \rightarrow& X001\\
+		S & \rightarrow& Y011\\
+		X & \rightarrow& S01\\
+		Y & \rightarrow& \lambda
+	\end{eqnarray*}
+	é uma GLE.
+\end{exemplo}
+
+Em uma gramática formal $G$ quando para as sentenças $w, w_1, \cdots, w_n \in (V \cup \Sigma)^*$, existem para todo $1 \leq i \leq n$ a regras $w \rightarrow w_i \in P$, é comum para simplificar a escrita do conjunto de regras usar a notação $w \rightarrow w_1 \mid \cdots \mid w_n$, em vez de escrever cada regra em separado. 
+
+\begin{exemplo}\label{exe:GLE}
+	Considere a GLE apresentada no Exemplo \ref{exe:GLE1} o conjunto $P$ da mesma poderia ser escrito como:
+	\begin{eqnarray*}
+		S & \rightarrow& X001 \mid Y011\\
+		X & \rightarrow& S01\\
+		Y & \rightarrow& \lambda
+	\end{eqnarray*}
+\end{exemplo}
+
+
+Um tipo mais rigoroso de gramática, são as chamadas gramática regulares, que como comentado em \cite{linz2006},  podem ser vista como gramáticas lineares em que as regras são capazes de produzir no máximo único símbolo terminal a cada derivação.
+
+\begin{definicao}[Gramáticas Regulares]
+	Uma gramática regular $G$ se ela é linear à esquerda (ou à direita) e toda produção é da forma $A \rightarrow Bw$ $(A \rightarrow wB)$ com $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma \cup \{\lambda\}$.
+\end{definicao}
+
+\begin{exemplo}\label{exe:Regular1}
+  A estrutura $G = \langle \{A, B, S\}, \{0, 1\}, S, P \rangle$ com $P$ formado pelas regras:
+  \begin{eqnarray*}
+		S & \rightarrow& 0A \mid 1B \mid \lambda \\
+		A & \rightarrow& 1S\\
+		B & \rightarrow& 0S
+	\end{eqnarray*}
+  é uma gramática regular.
+\end{exemplo}
+
+De forma natural duas gramática $G_1$ e $G_2$ serão ditas equivalentes sempre que elas gerarem a mesma linguagens (volte a Definição \ref{def:LinaugemGramatica} se necessário for para relembrar). O próximo resultado estabelece que gramática lineares (em um única direção) e gramática regulares tem o mesmo poder de geração de linguagens.
+
+\begin{teorema}\label{teo:SimplificacaoRegular}
+	$L = \mathcal{L}(G)$ para alguma gramática linear (esquerda ou direita)  $G$ se, e somente se, existe uma gramática regular $G'$ na mesma direção (esquerda ou direita) tal que $L = \mathcal{L}(G')$.
+\end{teorema}
+
+\begin{prova}
+  $(\Rightarrow)$ Suponha que $L = \mathcal{L}(G)$ para alguma gramática $G = \langle V, \Sigma, S, P \rangle$ tal que $G$ seja linear à esquerda (a prova é similar para o caso à direita). Agora construa uma nova gramática $G' = \langle V', \Sigma, S, P' \rangle$ tal que $P'$ é definido usando as seguintes regras: 
+		
+	\begin{itemize}
+		\item[R1:] Se $A \rightarrow Bw \in P$ onde $B \in V \cup \{\lambda\},  |w| \leq 1$, então $A \rightarrow Bw \in P'$.
+		\item[R2:] Se $A \rightarrow Ca_1\cdots a_n \in P$ onde $B \in V$ e $a_i \in \Sigma$ sendo $1 \leq i \leq n$ e $n > 1$, então tem-se que $A \rightarrow B_na_n, B_n \rightarrow B_{n-1}a_{n-1}, \cdots, B_2 \rightarrow Ca_1 \in P'$.
+		\item[R3:] Se $A \rightarrow a_1\cdots a_n \in P$ onde $a_i \in \Sigma$ sendo $1 \leq i \leq n$ e $n \geq 2$, então tem-se que $A \rightarrow B_na_n, B_n \rightarrow B_{n-1}a_{n-1}, \cdots, B_2 \rightarrow B_1a_1, B_1 \rightarrow \lambda \in P'$.
+	\end{itemize}
+
+	Para as regras R2 e R3 todo $B_i$ é uma nova variável existente em $V'$ que não existe originalmente em $V$. Claramente a gramática $G'$ é regular unitária à esquerda. Também não é difícil mostra por indução sobre o tamanho das derivações que para todo $w \in \Sigma^*$ tem-se que $S \vdash^*_G w$ se, e somente se, $S \vdash^*_{G'} w$, portanto, $\mathcal{L}(G) = \mathcal{L}(G')$.
+	
+	$(\Leftarrow)$ Trivial uma vez que toda gramática regular à esquerda (ou à direita) é um caso particular de gramática linear à esquerda (ou à direita).
+\end{prova}
