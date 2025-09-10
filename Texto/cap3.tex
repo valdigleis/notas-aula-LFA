@@ -52,11 +52,13 @@ Um tipo mais rigoroso de gramática, são as chamadas gramática regulares, que 
 \end{definicao}
 
 \begin{exemplo}\label{exe:Regular1}
-  A estrutura $G = \langle \{A, B, S\}, \{0, 1\}, S, P \rangle$ com $P$ formado pelas regras:
+  A estrutura $G = \langle \{A, B, C, D, S\}, \{0, 1\}, S, P \rangle$ com $P$ formado pelas regras:
   \begin{eqnarray*}
 		S & \rightarrow& 0A \mid 1B \mid \lambda \\
-		A & \rightarrow& 1S\\
-		B & \rightarrow& 0S
+		A & \rightarrow& 1S \mid 1C\\
+		B & \rightarrow& 0S \mid 0D\\
+		C & \rightarrow& 0S \mid \lambda\\
+		D & \rightarrow& 1S \mid \lambda
 	\end{eqnarray*}
   é uma gramática regular.
 \end{exemplo}
@@ -77,6 +79,215 @@ De forma natural duas gramática $G_1$ e $G_2$ serão ditas equivalentes sempre 
 	\end{itemize}
 
 	Para as regras R2 e R3 todo $B_i$ é uma nova variável existente em $V'$ que não existe originalmente em $V$. Claramente a gramática $G'$ é regular unitária à esquerda. Também não é difícil mostra por indução sobre o tamanho das derivações que para todo $w \in \Sigma^*$ tem-se que $S \vdash^*_G w$ se, e somente se, $S \vdash^*_{G'} w$, portanto, $\mathcal{L}(G) = \mathcal{L}(G')$.
-	
+
 	$(\Leftarrow)$ Trivial uma vez que toda gramática regular à esquerda (ou à direita) é um caso particular de gramática linear à esquerda (ou à direita).
 \end{prova}
+
+\begin{exemplo}\label{exe:GRU}
+	Considerando a gramática linear do Exemplo \ref{exe:GLE} usando o Teorema \ref{teo:SimplificacaoRegular} é gerado a gramática regular unitária, 
+	$$G' = \langle \{S, B_3, B_2, C_3, C_2, X, D_2, Y\}, \{0, 1\}, S, P'\rangle$$ 
+	onde $P'$ é formado pelas regras:
+	\begin{eqnarray*}
+		S & \rightarrow & B_31 \mid C_31\\
+		B_3 & \rightarrow & B_20\\
+		B_2 & \rightarrow & X0\\
+		C_3 & \rightarrow & C_21\\
+		C_2 & \rightarrow & Y0\\
+		X & \rightarrow & D_21\\
+		D_2 & \rightarrow& S0\\
+		Y & \rightarrow & \lambda
+	\end{eqnarray*}
+\end{exemplo}
+
+Obviamente a gramática do Exemplo \ref{exe:GRU} poderia ser otimizada para usar menos variáveis, porém otimização não é o foco de interesse no Teorema \ref{teo:SimplificacaoRegular}. O próximo resultado estabelece o poder de geração das gramáticas regulares à direta.
+
+\begin{teorema}\label{teo:GRD-AFD}
+	$L = \mathcal{L}(G)$ para alguma gramática regular à direta $G$ se, e somente se, $L$ é uma linguagem regular.
+\end{teorema}
+
+\begin{prova}
+	$(\Rightarrow)$ Suponha que $L = \mathcal{L}(G')$ para alguma gramática regular à direta $G' = \langle V, \Sigma, S, P \rangle$ tal que $L = \mathcal{L}(G')$, sem perda de generalidade\sidefootnote{Basta gerar uma nova gramática onde toda regra da forma $A \rightarrow a$ com $a \in \Sigma$ foi substituída pelas regras $A \rightarrow aC$ e $C \rightarrow \lambda$ onde $C$ é uma variável nova criada, obviamente a nova gramática continua equivalentes a antiga.} pode-se assumir que toda regra em $P$ é da forma $A \rightarrow aB$ ou $A \rightarrow \lambda$ com $A, B \in V$ e $a \in \Sigma \cup \{\lambda\}$, dito isto, pode-se agora construir um $\lambda$-AFN $M = \langle V \cup \{q_f\}, \Sigma, \underline{\delta_N}, S, \{q_f\} \rangle$ tal que:
+	\begin{eqnarray*}
+		B \in \underline{\delta_N}(A, a) & \Longleftrightarrow & A \rightarrow aB \in P\\
+		q_f \in \underline{\delta_N}(A, \lambda)& \Longleftrightarrow & A \rightarrow \lambda \in P
+	\end{eqnarray*}
+	Agora será mostrado por indução sobre o tamanho das derivações em $G'$ que se $w$ é derivada por $G'$ e $w \in \Sigma^*$, então é aceita por $M$.
+	\begin{itemize}
+		\item \textbf{(B)}ase da indução: Quando $w$ é derivada em $G'$ com uma única derivação tem-se então duas situações possíveis:
+		\begin{itemize}
+			\item[(1)] Quando $w = \lambda$, obrigatoriamente existe uma regra da forma $S \rightarrow \lambda$, e pela construção de $M$ tem-se que $q_f \in \underline{\delta_N}(S, \lambda)$, logo $\widehat{\underline{\delta_N}}(S, \lambda) \cap \{q_f\} \neq \emptyset$ e, portanto, $\lambda \in L(M)$. 
+			\item[(2)] Quando $w = aB$, existe em $P$ uma regra da forma $S \rightarrow aB$ com $a \in \Sigma \cup \{\lambda\}$ e $B \in V$, assim pela construção de $M$ tem-se que $B \in \underline{\delta_N}(A, a)$. Como $aB \notin \Sigma^*$ não há mais nada a fazer nesse caso.
+		\end{itemize}
+		
+		\item \textbf{(H)}ipótese indutiva: Suponha que $S \vdash^*_{G'} w$ em $n$ derivação com $n \geq 1$ tal que:
+		\begin{itemize}
+			\item[(1)] Se $w \in \Sigma^*$, então $w \in \mathcal{L}(M)$.
+			\item[(2)] Se $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$.
+		\end{itemize}
+		
+		\item \textbf{(P)}asso indutivo: Agora dado que $S \vdash^*_{G'} w'$ em $n+1$ derivações, tem-se obrigatoriamente que acontece o caso (2) de \textbf{(HI)} e nesse caso duas situações são possíveis:
+		\begin{itemize}
+			\item[(1)] Se $w' \in \Sigma^*$, então $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e existe em $P$ uma produção $B \rightarrow \lambda$, e assim, $w' = a_1\cdots a_{n-1}$, nesta situação pelo caso (2) de \textbf{(HI)} tem-se que $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$ e como $B \rightarrow \lambda$ pelo construção de $M$ tem-se que $q_f \in \underline{\delta_N}(B, \lambda)$, consequentemente, $\widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1}) \cap \{q_f\} \neq \emptyset$ e, portanto, $w' \in \mathcal{L}(M)$.
+			\item[(2)] Se $w' = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então pela construção de $M$ tem-se que $B \in \widehat{\underline{\delta_N}}(S, w)$ como $w' \notin \Sigma^*$ não há mais nada a fazer nesse caso.
+		\end{itemize}
+	\end{itemize}
+	Portanto, o raciocínio indutivo anterior garante que sempre que  $w$ é derivada por $G'$ e $w \in \Sigma^*$ tem-se que $w \in \mathcal{L}(M)$ e assim pode-se afirmar pelo Corolário \ref{col:RegularLAFN} que $L$ é regular. 
+	
+	$(\Leftarrow)$ Suponha que $L$ é uma linguagem regular assim por definição existe um AFD $M = \langle Q, \Sigma, \delta, q_0, F \rangle$ tal que $L = \mathcal{L}(M)$, assim construa uma gramática regular à direita $G = \langle Q, \Sigma, q_0, P \rangle$ onde o conjunto $P$ é definido usando as regras a seguir, 
+	\begin{itemize}
+		\item[(a)] Se $\delta(q_i, a) = q_j$, então $q_i \rightarrow aq_j \in P$.
+		\item[(b)] Se $q_i \in F$, então $q_i \rightarrow \lambda \in P$.
+	\end{itemize} 
+	Agora note que para todo $w \in \Sigma^*$ com $w = a_1 \cdots a_n$ tem-se que, 
+	\begin{eqnarray*}
+		w \in \mathcal{L}(M) & \Longleftrightarrow & \widehat{\delta}(q_0, w) \in F\\
+		& \Longleftrightarrow & \widehat{\delta}(q_0, a_1 \cdots a_n) \in F\\
+		& \Longleftrightarrow & (\exists q_f \in F)[\widehat{\delta}(q_0, w) = q_f]\\
+		& \Longleftrightarrow & (\exists q_1, \cdots, q_{n-1} \in Q,  q_f \in F)\\
+		& & [\delta(q_0, a_1) = q_1 \land \cdots \land \delta(q_{n-1}, a_n) = q_f]\\
+		& \Longleftrightarrow & (\exists q_1, \cdots, q_{n-1} \in Q,  q_f \in F)\\
+		& & [q_0 \rightarrow a_1q_1, \cdots, q_{n-1} \rightarrow a_nq_f, q_f \rightarrow \lambda \in P]\\
+		& \Longleftrightarrow & q_0 \vdash^* a_1 \cdots a_n\\
+		& \Longleftrightarrow & q_0 \vdash^* w\\
+		& \Longleftrightarrow & w \in \mathcal{L}(G)
+	\end{eqnarray*} 
+	portanto, $\mathcal{L}(M) = \mathcal{L}(G)$ o que conclui a prova.
+\end{prova}
+
+\begin{lema}\label{lema:GRD-Reversa}
+	Se $L$ é gerada por uma gramática à direita, então $L^r$ é gerada por uma gramática regular à direita.
+\end{lema}
+
+\begin{prova}
+	Suponha que $L$ é gerada por uma gramática à direita $G$, ou seja, $L = \mathcal{L}(G)$, assim pelo Teorema \ref{teo:GRD-AFD} tem-se que $L$ é regular, logo existe um AFD $M = \langle Q, \Sigma, \delta, q_0, F\rangle$ tal que $L = \mathcal{L}(M)$, agora construa um $\lambda$-AFN $M_1 = \langle Q \cup \{q_f\}, \Sigma, \underline{\delta_N}, q_0, \{q_f\}\rangle$ tal que,
+	\begin{eqnarray*}
+		\underline{\delta_N}(q, a) & = & \left\{\begin{array}{ll}	
+			\{\delta(q, a)\}, & \hbox{se } q \in Q, a \in \Sigma\\
+			\{q_f\}, & \hbox{se } q \in F, a = \lambda \\
+			\emptyset, & \hbox{qualquer outro caso}
+		\end{array}\right.
+	\end{eqnarray*}
+	claramente $L = \mathcal{L}(M_1)$, agora construa um novo $\lambda$-AFN $M_2 = \langle Q \cup \{q_f\}, \Sigma, \underline{\delta'_N}, q_f, \{q_0\}\rangle$ onde para todo $q \in Q \cup \{q_f\}$ e $a \in \Sigma \cup \{\lambda\}$ tem-se que,
+	\begin{eqnarray*}
+		q_i \in \underline{\delta'_N}(q_j, a) & \Longleftrightarrow & q_j \in \underline{\delta_N}(q_i, a)
+	\end{eqnarray*}
+	pela construção de $M_2$ é claro que  $w \in \mathcal{L}(M_1) \Longleftrightarrow w^r \in \mathcal{L}(M_2)$ e, portanto, $L^r = \mathcal{L}(M_2)$. Desde que $M_2$ é um $\lambda$-AFN pelo Corolário \ref{col:RegularLAFN} tem-se que $L^r$ é uma linguagem regular, consequentemente, pelo Teorema \ref{teo:GRD-AFD} existe uma gramática regular à direita $G'$ tal que $L = \mathcal{L}(G')$, o que conclui a prova.
+\end{prova}
+
+O próximo resultado mostra que gramática regulares à esquerda e à direita são equivalentes.
+
+\begin{teorema}[Mudança de direção regular]\label{teo:MudacaDeLadoGramatica}
+	$L$ é gerada por uma gramática à esquerda se, e somente se, $L$ é gerada por uma gramática regular à direita.
+\end{teorema}
+
+\begin{prova}
+	$(\Rightarrow)$ Suponha que $L$ é gerada por uma gramática à esquerda $G = \langle V, \Sigma, S, P \rangle$, assim sem perda de generalidade\sidefootnote{Basta gerar uma nova gramática onde toda regra da forma $A \rightarrow a$ com $a \in \Sigma$ foi substituída pelas regras $A \rightarrow Ca$ e $C \rightarrow \lambda$ onde $C$ é uma variável nova criada.} pode-se assumir que todas as regras em $P$ são da forma $A \rightarrow Ba$ com $A \in V, B \in V \cup \{\lambda\}$ e $a \in \Sigma \cup \{\lambda\}$,  agora construa um $\lambda$-AFN $M = \langle V \cup \{q_f\}, \Sigma, \underline{\delta_N}, S, \{q_f\} \rangle$ onde, 
+	\begin{eqnarray*}
+		B \in \underline{\delta_N}(A, a) & \Longleftrightarrow & A \rightarrow Ba \in P\\
+		q_f \in \underline{\delta_N}(A, \lambda)& \Longleftrightarrow & A \rightarrow \lambda \in P
+	\end{eqnarray*} 
+	Agora note que para todo $w = a_1\cdots a_n \in \Sigma^*$ tem-se que,
+	\begin{eqnarray*}
+		w \in \mathcal{L}(G') & \Longleftrightarrow &  a_1\cdots a_n \in \mathcal{L}(G')\\
+		& \Longleftrightarrow & S \vdash_{G'}^* a_1\cdots a_n\\
+		& \Longleftrightarrow & (\exists A_1 \cdots A_n, S \in V)\\
+		& & [S \rightarrow A_na_n, A_n \rightarrow A_{n-1}a_{n-1}, \cdots, A_{2} \rightarrow A_1a_1, A_1 \rightarrow \lambda \in P']\\
+		& \Longleftrightarrow & (\exists A_1 \cdots A_n, S \in V)\\
+		& & [A_n \in \underline{\delta_N}(S, a_n), A_{n-1} \in \underline{\delta_N}(A_n, a_{n-1}), \cdots,  A_{1} \in \underline{\delta_N}(A_2, a_{1}), \\
+		& &  q_f \in \underline{\delta_N}(A_1, \lambda)]\\
+		& \Longleftrightarrow & a_n\cdots a_1 \in \mathcal{L}(M)\\
+		& \Longleftrightarrow & w^r \in \mathcal{L}(M)
+	\end{eqnarray*}
+	Logo $\mathcal{L}(M) = \mathcal{L}(G)^r$, desde que $M$ é um $\lambda$-AFN tem-se pelo Corolário \ref{col:RegularLAFN} que $\mathcal{L}(G)^r$ é regular, assim pelo Teorema \ref{teo:GRD-AFD} existe uma gramática regular à direita $\hat{G_1}$ que a gera, ou seja, $\mathcal{L}(\hat{G_1}) = \mathcal{L}(G)^r$, mas pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $\hat{G_2}$ tal que $\mathcal{L}(\hat{G_2}) = \mathcal{L}(\hat{G_1})^r$, mas $ \mathcal{L}(\hat{G_1})^r = (\mathcal{L}(G)^r)^r = (L^r)^r = L$, portanto, $L$ é gerada por uma gramática regular à direita. 
+	
+	$(\Leftarrow)$ Suponha que que $L$ é gerada por uma gramática regular à direita, ou seja, que existe uma gramática regular a direita $G$ tal que $L = \mathcal{L}(G)$, assim pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $G_1 = \langle V, \Sigma, S, P \rangle$ tal que $L^r = \mathcal{L}(G_1)$, sem perda de generalidade pode-se assumir todas as suas produções em $G_1$ são da forma $A \rightarrow aB$ com $A \in V, B \in V \cup \{\lambda\}$ e $a \in \Sigma \cup \{\lambda\}$. Dito isso construa uma nova gramática $G_2 = \langle V, \Sigma, S, P'\rangle$ onde $P' = \{A \rightarrow Ba \mid A \rightarrow aB \in P\}$, claramente $G_2$ é regular à esquerda. Mas pela construção de $G_2$ fica claro que $S \vdash_{G_1}^* w \Longleftrightarrow S \vdash_{G_2}^* w^r$, logo $\mathcal{L}(G_1)^r = \mathcal{L}(G_2)$, mas desde que, $\mathcal{L}(G_1)^r = (L^r)^r = L$, tem-se então que $L$ é gerada por uma gramática linear à esquerda, o que completa  a prova.
+\end{prova}
+
+\begin{exemplo}
+	Dado a gramática regular à direita $G_1 = \langle \{A, B, C\}, \{a, b\}, A, P_1 \rangle$ com $P_1$ é formado pelas seguintes regras,
+	\begin{eqnarray*}
+		A & \rightarrow & aC \mid B \\
+		B & \rightarrow & bB \mid \lambda\\
+		C & \rightarrow & aA
+	\end{eqnarray*}
+	 claramente $\mathcal{L}(G_1) = \{w \in \{a, b\}^* \mid w = a^{2m}b^n \hbox{ com } m,n \in \mathbb{N}\}$,  agora usando a construção exposta pelo Teorema \ref{teo:MudacaDeLadoGramatica}, é possível construir a gramática regular à esquerda $G_2 = \langle \{A, B, C\}, \{a, b\}, B, P_2 \rangle$ onde $P_2$ é formado pelas seguintes regras,
+	 \begin{eqnarray*}
+	 	B & \rightarrow & Bb \mid Ab \mid A\\
+	 	A & \rightarrow & Ca \mid \lambda\\
+	 	C & \rightarrow & Aa 
+	 \end{eqnarray*}
+	 e obviamente $\mathcal{L}(G_2) = \{w \in \{a, b\}^* \mid w = a^{2m}b^n \hbox{ com } m,n \in \mathbb{N}\}$.
+\end{exemplo}
+
+\section{Expressões regulares}\label{sec:ExpressionsRegulares}
+
+Até agora as linguagens foram vistas sobre a ótica das máquinas de computação, isto é, sobre a perspectiva dos autômatos finitos, e sobre a ideia de gramática regulares, ou seja, estruturas geradoras. Em tais perspectivas as linguagens são vistas como sendo conjuntos de palavras sobre os quais as máquinas tinha a tarefa de reconhecer seus elementos, ou como elementos que deveriam ser gerados (ou derivados) pelas gramáticas. 
+
+Neste seção será apresentada uma visão alternativa, essa visão tem um aspecto mais algébrico para as linguagens. Tal visão foi introduzida pelo matemático e lógico americano Stephen Kleene em seu seminal \textit{paper} intitulado como, ``\textit{Representation of events in nerve nets and finite automata}'' \cite{kleene1951}. Sobre a perspectiva introduzida por Kleene é importante mencionar que ela consiste de um sistema formal (com sintaxe e semântica), chamamos esse sistema formal de expressões  regulares. Tal sistema tem a caracteristica de ser denotacional, isto é, a linguagem é denotada por uma expressão (em geral simples).
+
+\begin{definicao}[Conjunto das Expressões Regulares (Sintaxe)]\label{def:ExpRegularesSintaxe}
+	Seja $\Sigma$ uma alfabeto, o conjunto de todas as expressões regulares sobre $\Sigma$, denotado por $Exp_\Sigma$, é o conjunto indutivamente gerado pelas seguintes regras.
+	\begin{itemize}
+		\item[ ]\textbf{(B)ase}: $\emptyset, \lambda$ e cada $a \in \Sigma$, são expressões regulares\footnote{As expressões regulares da base costumam ser chamadas de expressões regulares primitivas.}.
+		\item[ ]\textbf{(P)asso indutivo}:  Se $r_1, r_2 \in Exp_\Sigma$, então $r_1 + r_2, r_1 \cdot r_2, r_1^*, (r_1) \in Exp_\Sigma$.
+		\item[ ]\textbf{(F)echo}: $Exp_\Sigma$ é exatamente o conjunto dos elementos obtidos a partir \textbf{(B)} ou usando-se uma quantidade finita (podendo ser nula) de aplicações de \textbf{(P)}.
+	\end{itemize}
+\end{definicao}
+
+No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, ), ^* \notin \Sigma$, assim uma expressão regular nem sempre é uma palavra sobre $\Sigma$, em geral os símbolos $+$ e $\cdot$ são lidos como soma e produto \cite{carroll1989}, e o $^*$ é lido com operador estrela de Kleene, ou simplesmente, estrela. Além disso, como dito em \cite{benjaLivro2010} se $r_1, r_2 \in Exp_\Sigma$, então costuma-se escrever $r_1r_2$ em vez de $r_1 \cdot r_2$.
+
+\begin{exemplo}
+	Considerando o alfabeto $\{0,1\}$ tem-se que $(1 + 1)0, 01 \in Exp_\Sigma$. Essa afirmação pode ser verificada construindo a ávore de dedução de tais palavras, e isso é feito abaixo.
+
+	\[
+	\begin{prooftree}
+		\hypo{ }
+		\infer1[\textbf{(B)}]{ 1 }
+		\hypo{ }
+		\infer1[\textbf{(B)}]{ 1 }
+		\infer2[\textbf{(P)}]{ 1 + 1 }
+		\infer1[\textbf{(P)}]{ (1 + 1) }
+		\hypo{ }
+		\infer1[\textbf{(B)}]{ 0 }
+		\infer2[\textbf{(P)}]{ (1 + 1)0 }
+	\end{prooftree}
+	\quad 
+	\ \ \ \ \ \ \ \ \ \
+	\quad 
+	\begin{prooftree}
+		\hypo{ }
+		\infer1[\textbf{(B)}]{ 0 }
+		\hypo{ }
+		\infer1[\textbf{(B)}]{ 1 }
+		\infer2[\textbf{(P)}]{ 01 }
+	\end{prooftree}
+	\]
+	e isso mostra que de fato $(1 + 1)0, 01 \in Exp_{\{0,1\}}$.
+\end{exemplo}
+
+\begin{exemplo}
+	Considerando o alfabeto $\{a, b, c\}$ tem-se que:
+
+	\[
+		\begin{prooftree}
+			\hypo{ }
+			\infer1[\textbf{(B)}]{ a }
+			\hypo{ }
+			\infer1[\textbf{(B)}]{ \emptyset }
+			\hypo{ }
+			\infer1[\textbf{(B)}]{ b }
+			\hypo{ }
+			\infer1[\textbf{(B)}]{ c }
+			\infer1[\textbf{(P)}]{ c^* }
+			\infer2[\textbf{(P)}]{ bc^* }
+			\infer1[\textbf{(P)}]{ (bc^*) }
+			\infer2[\textbf{(P)}]{ \emptyset + (bc^*) }
+			\infer1[\textbf{(P)}]{ (\emptyset + (bc^*)) }
+			\infer2[\textbf{(P)}]{ a(\emptyset + (bc^*)) }
+		\end{prooftree}
+	\]
+
+	logo $a(\emptyset + (bc^*)) \in Exp_{\{a, b, c\}}$.
+\end{exemplo}
+
+A seguir será formalizado o conceito de semântica para as expressões regulares, sendo que tal semântica pode ser visto como uma \textbf{semântica denotacional}\sidefootnote{Uma semântica denotacional é aquela em que as funções de valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}, que apresenta significado as operações de soma e multiplicação.
