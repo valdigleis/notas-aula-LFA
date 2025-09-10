@@ -99,23 +99,59 @@ De forma natural duas gramática $G_1$ e $G_2$ serão ditas equivalentes sempre 
 	\end{eqnarray*}
 \end{exemplo}
 
-Obviamente a gramática do Exemplo \ref{exe:GRU} poderia ser otimizada para usar menos variáveis, porém otimização não é o foco de interesse no Teorema \ref{teo:SimplificacaoRegular}. O próximo resultado estabelece o poder de geração das gramáticas regulares à direta.
+Obviamente a gramática do Exemplo \ref{exe:GRU} poderia ser otimizada para usar menos variáveis, porém otimização não é o foco de interesse no Teorema \ref{teo:SimplificacaoRegular}. Os próximos resultados estabelecem o poder de geração das gramáticas regulares à direta.
+
+\begin{lema}\label{lema:SimplificacaoRegular}
+	Se $G' = \langle V, \Sigma, S, P\rangle$ é uma gramática regular à direita, então existe uma gramática regular à direita $G' = \langle V', \Sigma, S, P'\rangle$ e toda regra em $G'$ são das formas $A \rightarrow aB$ ou $A \rightarrow \lambda$ com $a \in \Sigma \cup \{\lambda\}$ e $A, B \in V$.
+\end{lema}
+
+\begin{prova}
+	Suponha que $L = \mathcal{L}(G)$ para alguma gramática regular à direta $G = \langle V, \Sigma, S, P \rangle$, agora construa uma nova gramática $G' = \langle V \cup \{T\}, \Sigma, S, P'\rangle$ com $T \notin V$ e $P'$ sendo construído pelas seguintes regras:
+	\begin{itemize}
+		\item[$(r_a)$] Se  $A \rightarrow aB \in P$ com  $a \in \Sigma \cup \{\lambda\}$ e $A, B \in V$, então $A \rightarrow aB \in P'$.
+		\item[$(r_b)$] Se  $A \rightarrow a \in P$ com  $A\in V$ e $a \in \Sigma$, então $A \rightarrow aT, T \rightarrow \lambda \in P'$.
+	\end{itemize}
+	note que as regras $r_a$ e $r_b$ garante que não existem transições da forma $A \rightarrow a$ em $P'$ quando $a \in \Sigma$. Agora por indução sobre o tamanho das formas sentenciais, será mostrado que $G'$ preserva todas as derivações de $G$.
+	\begin{itemize}
+		\item \textbf{(B)}ase da indução: Quando $S \vdash_{G} w$ em uma única derivação, três casos podem ocorrer:
+		\begin{itemize}
+			\item[(a)] Quando $w = \lambda$ claramente foi aplicada uma regra da forma $S \rightarrow \lambda \in P$, e pela contrução de $P'$ claramente $S \rightarrow w \in P'$, assim $S \vdash_{G'} w$.
+			\item[(b)] Quando $w = a$ claramente foi aplicada uma regra da forma $S \rightarrow a \in P$, e pela contrução de $P'$ tem-se que $S \rightarrow aT, T \rightarrow \lambda \in P'$, consequentemente, $S \vdash_{G'}^* w$.
+			\item[(c)]  Quando $w = aB$ claramente foi aplicada uma regra da forma $S \rightarrow aB \in P$, e pela contrução de $P'$ tem-se que $S \rightarrow aB \in P'$, e portanto, $S \vdash_{G'} w$.
+		\end{itemize}
+		\item \textbf{(H)}ipótese indutiva: Suponha que $S \vdash_{G}^* a_1\cdots a_{n-1}A_n$ com $n \geq 1$ derivações e $S \vdash_{G'}^* a_1\cdots a_{n-1}A_n$ com $n$ ou $n+1$ derivações.
+		\item \textbf{(P)}asso indutivo: Seja $S \vdash_{G}^* a_1\cdots a_{n-1}a_n$ com $n + 1$ derivações, logo existe uma forma sentencial $a_1\cdots a_{n-1}A_n$ derivada em $G$ com $n$ derivações e $A_n \rightarrow a \in P$ com $a \in \Sigma \cup \{\lambda\}$. Agora por \textbf{(H)}, existe $a_1\cdots a_{n-1}A_n$ é derivada em $G$ com $n$ derivações e em $G'$ com $n$ ou $n+1$ derivações. Como $S \vdash_{G}^* a_1\cdots a_{n-1}a_n$ com $n + 1$ derivações isso implica que $A_n \rightarrow a_n \in P$ com $a_n \in \Sigma \cup \{\lambda\}$, logo quando $a_n = \lambda$ então $A_n \rightarrow a_n \in P'$ e, portanto,  $S \vdash_{G'}^* a_1\cdots a_{n-1}a_n$ com $n + 1$ derivações, por outro lado, quando $a_n \in \Sigma$ tem-se que $A_n \rightarrow a_nT, T \rightarrow \lambda \in P'$, e consequentemente,  $S \vdash_{G'}^* a_1\cdots a_{n-1}a_n$ com $n + 2$ derivações.
+	\end{itemize}
+	Portanto, o raciocínio indutivo anterior garante que $G'$ preserva todas as derivações de $G$, logo quando $w \in \mathcal{L}(G)$ tem-se que $w \in \mathcal{L}(G')$, consequentemente,  $ \mathcal{L}(G) \subset \mathcal{L}(G')$. Por outro lado, pelo construção de $G'$ tem-se sem perda de generalidade\sidefootnote{O caso $a_1\cdots a_n = \lambda$ é trivial e não será demonstrado aqui.} que $a_1\cdots a_n \neq \lambda$ é tal que,
+	\begin{eqnarray*}
+		a_1\cdots a_n \in \mathcal{L}(G') & \Rightarrow &  (\exists A_{n} \in V')[S \vdash_{G'}^* a_1\cdots a_{n}A_n \land A_n \rightarrow \lambda \in P']\\
+		& \Rightarrow & (\exists A_1, \cdots, A_{n} \in V')[S \rightarrow a_1A_1, \\
+		& & \cdots, A_{n-1} \rightarrow a_nA_n, A_n \rightarrow \lambda \in P']\\
+		& \Rightarrow & (\exists A_1, \cdots, A_{n} \in V)[S \rightarrow a_1A_1,\\
+		& &  \cdots, A_{n-1} \rightarrow a_nA_n, A_n \rightarrow \lambda \in P]\\
+		& & \lor  (\exists A_1, \cdots, A_{n-1} \in V)[S \rightarrow a_1A_1, \cdots, A_{n-1} \rightarrow a_{n} \in P]\\
+		& \Rightarrow &  (\exists A_{n} \in V)[S \vdash_{G}^* a_1\cdots a_{n}A_n \land A_n \rightarrow \lambda \in P]\\
+		& & \lor (\exists A_{n-1} \in V)[S \vdash_{G}^* a_1\cdots a_{n-1}A_n \land A_n \rightarrow a_n \in P]\\
+		& \Rightarrow & a_1\cdots a_n \in \mathcal{L}(G) \lor a_1\cdots a_n \in \mathcal{L}(G)\\
+		& \Rightarrow & a_1\cdots a_n \in \mathcal{L}(G)
+	\end{eqnarray*}
+	E portanto, $\mathcal{L}(G') \subset \mathcal{L}(G)$. Agora desde que $ \mathcal{L}(G) \subset \mathcal{L}(G')$ e $\mathcal{L}(G') \subset \mathcal{L}(G)$, tem-se que $\mathcal{L}(G') = \mathcal{L}(G)$, o que completa a prova.
+\end{prova}
 
 \begin{teorema}\label{teo:GRD-AFD}
 	$L = \mathcal{L}(G)$ para alguma gramática regular à direta $G$ se, e somente se, $L$ é uma linguagem regular.
 \end{teorema}
 
 \begin{prova}
-	$(\Rightarrow)$ Suponha que $L = \mathcal{L}(G')$ para alguma gramática regular à direta $G' = \langle V, \Sigma, S, P \rangle$ tal que $L = \mathcal{L}(G')$, sem perda de generalidade\sidefootnote{Basta gerar uma nova gramática onde toda regra da forma $A \rightarrow a$ com $a \in \Sigma$ foi substituída pelas regras $A \rightarrow aC$ e $C \rightarrow \lambda$ onde $C$ é uma variável nova criada, obviamente a nova gramática continua equivalentes a antiga.} pode-se assumir que toda regra em $P$ é da forma $A \rightarrow aB$ ou $A \rightarrow \lambda$ com $A, B \in V$ e $a \in \Sigma \cup \{\lambda\}$, dito isto, pode-se agora construir um $\lambda$-AFN $M = \langle V \cup \{q_f\}, \Sigma, \underline{\delta_N}, S, \{q_f\} \rangle$ tal que:
+	$(\Rightarrow)$ Suponha que $L = \mathcal{L}(G')$ para alguma gramática regular à direta $G' = \langle V, \Sigma, S, P \rangle$ tal que $L = \mathcal{L}(G')$, sem perda de generalidade, pelo Lema \ref{lema:SimplificacaoRegular} pode-se assumir que toda regra em $P$ é da forma $A \rightarrow aB$ ou $A \rightarrow \lambda$ com $A, B \in V$ e $a \in \Sigma \cup \{\lambda\}$, dito isto, pode-se agora construir um $\lambda$-AFN $M = \langle V, \Sigma, \underline{\delta_N}, S, F \rangle$ tal que:
 	\begin{eqnarray*}
-		B \in \underline{\delta_N}(A, a) & \Longleftrightarrow & A \rightarrow aB \in P\\
-		q_f \in \underline{\delta_N}(A, \lambda)& \Longleftrightarrow & A \rightarrow \lambda \in P
+		B \in \underline{\delta_N}(A, a) & \Longleftrightarrow & A \rightarrow aB \in P
 	\end{eqnarray*}
-	Agora será mostrado por indução sobre o tamanho das derivações em $G'$ que se $w$ é derivada por $G'$ e $w \in \Sigma^*$, então é aceita por $M$.
+	como $A, B \in V$ e $a \in \Sigma \cup \{\lambda\}$ e $F = \{A \in V \mid A \rightarrow \lambda \in P\}$. Agora será mostrado por indução sobre o tamanho das derivações em $G'$ que se $w$ é derivada por $G'$ e $w \in \Sigma^*$, então é aceita por $M$.
 	\begin{itemize}
 		\item \textbf{(B)}ase da indução: Quando $w$ é derivada em $G'$ com uma única derivação tem-se então duas situações possíveis:
 		\begin{itemize}
-			\item[(1)] Quando $w = \lambda$, obrigatoriamente existe uma regra da forma $S \rightarrow \lambda$, e pela construção de $M$ tem-se que $q_f \in \underline{\delta_N}(S, \lambda)$, logo $\widehat{\underline{\delta_N}}(S, \lambda) \cap \{q_f\} \neq \emptyset$ e, portanto, $\lambda \in L(M)$. 
+			\item[(1)] Quando $w = \lambda$, obrigatoriamente existe uma regra da forma $S \rightarrow \lambda$, e pela construção de $M$ tem-se que $S \in \underline{\delta_N}(S, \lambda)$, logo $\widehat{\underline{\delta_N}}(S, \lambda) \cap F \neq \emptyset$ e, portanto, $\lambda \in L(M)$. 
 			\item[(2)] Quando $w = aB$, existe em $P$ uma regra da forma $S \rightarrow aB$ com $a \in \Sigma \cup \{\lambda\}$ e $B \in V$, assim pela construção de $M$ tem-se que $B \in \underline{\delta_N}(A, a)$. Como $aB \notin \Sigma^*$ não há mais nada a fazer nesse caso.
 		\end{itemize}
 		
@@ -127,7 +163,7 @@ Obviamente a gramática do Exemplo \ref{exe:GRU} poderia ser otimizada para usar
 		
 		\item \textbf{(P)}asso indutivo: Agora dado que $S \vdash^*_{G'} w'$ em $n+1$ derivações, tem-se obrigatoriamente que acontece o caso (2) de \textbf{(HI)} e nesse caso duas situações são possíveis:
 		\begin{itemize}
-			\item[(1)] Se $w' \in \Sigma^*$, então $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e existe em $P$ uma produção $B \rightarrow \lambda$, e assim, $w' = a_1\cdots a_{n-1}$, nesta situação pelo caso (2) de \textbf{(HI)} tem-se que $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$ e como $B \rightarrow \lambda$ pelo construção de $M$ tem-se que $q_f \in \underline{\delta_N}(B, \lambda)$, consequentemente, $\widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1}) \cap \{q_f\} \neq \emptyset$ e, portanto, $w' \in \mathcal{L}(M)$.
+			\item[(1)] Se $w' \in \Sigma^*$, então $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e existe em $P$ uma produção $B \rightarrow \lambda$, e assim, $w' = a_1\cdots a_{n-1}$, nesta situação pelo caso (2) de \textbf{(HI)} tem-se que $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$ e como $B \rightarrow \lambda$ pela construção de $M$ tem-se que $B \in F$, consequentemente, $\widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1}) \cap F \neq \emptyset$ e, portanto, $w' \in \mathcal{L}(M)$.
 			\item[(2)] Se $w' = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então pela construção de $M$ tem-se que $B \in \widehat{\underline{\delta_N}}(S, w)$ como $w' \notin \Sigma^*$ não há mais nada a fazer nesse caso.
 		\end{itemize}
 	\end{itemize}
