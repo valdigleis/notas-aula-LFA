@@ -1854,10 +1854,10 @@ Agora será apresentado o algoritmo de Hopcroft \cite{hopcroft1971} para minimiz
 \end{questao}
 
 \begin{exerList}
-	\item $L_1 = \{w \in \{\circ, \star, 0, 1\}^* \mid N_\star(w) > 3 \land N_\circ(w) < 5\}$.
-  \item $L_2 = \{w \in \{0, x, 1\}^* \mid w N_x(w) = 6\}$.
+	\item $L_1 = \{w \in \{\circ, \star, 0, 1\}^* \mid N_\star(w) > 3 \land N_\star(w) \neq 2k, k \in \mathbb{N}\}$.
+  \item $L_2 = \{w \in \{0, x, 1\}^* \mid N_x(w) = 6\}$.
   \item $L_3 = \{u0^i1^jv \in \{1, 2, 0\}^* \mid u, v \in \{2\}^* \land  i + j = 2k + 1, k \in \mathbb{N}-\{0\}\}$.
-	\item $L_4 = \{ubv \mid u, v \in \{a, b, c\}^*, N_b(u) = 0 \land N_b(v) < 5\}$.
+	\item $L_4 = \{u\#b\#v \mid u, v \in \{a, b, c\}^*, N_b(u) = 0 \land N_b(v) < 5\}$.
 \end{exerList}
 
 \begin{questao}\label{exer:AF3}

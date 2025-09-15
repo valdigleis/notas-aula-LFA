@@ -326,4 +326,33 @@ No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, 
 	logo $a(\emptyset + (bc^*)) \in Exp_{\{a, b, c\}}$.
 \end{exemplo}
 
-A seguir será formalizado o conceito de semântica para as expressões regulares, sendo que tal semântica pode ser visto como uma \textbf{semântica denotacional}\sidefootnote{Uma semântica denotacional é aquela em que as funções de valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}, que apresenta significado as operações de soma e multiplicação.
+A seguir será formalizado o conceito de semântica para as expressões regulares, sendo que tal semântica pode ser visto como uma \textbf{semântica denotacional}\sidefootnote{Aquela em que as valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}, que apresenta significado as operações de soma e multiplicação. Antes porém, vale ressaltar que, uma expressão regular não é, em geral, uma palavra de alguma linguagem sobre $\Sigma$.
+
+\ 
+
+\begin{definicao}[Semântica das Expressão Regulares]\label{def:ExpRegularesSemantica}
+	Seja $Exp_\Sigma$ o conjunto das expressões regulares sobre $\Sigma$,  a semântica (ou interpretação) de $Exp_\Sigma$ é uma função $\mathcal{L}: Exp_\Sigma \rightarrow \wp(\Sigma^*)$ definida recursivamente para todo $r, r_1, r_2  \in Exp_\Sigma$ pelas seguintes regras.
+	\begin{itemize}
+		\item[(i)] Se $r \in \Sigma \cup \{\lambda\}$, então $\mathcal{L}(r) = \{r\}$.
+		\item[(ii)] Se $r = \emptyset$, então $\mathcal{L}(r) = \emptyset$.
+		\item[(iii)] Se $r = r_1 + r_2$, então $\mathcal{L}(r) = \mathcal{L}(r_1) \cup \mathcal{L}(r_2)$.
+		\item[(iv)] Se $r = r_1 \cdot r_2$, então $\mathcal{L}(r) = \mathcal{L}(r_1)\mathcal{L}(r_2)$.
+		\item[(v)] Se $r = r_1^*$, então $\mathcal{L}(r) = (\mathcal{L}(r_1))^*$.
+		\item[(vi)] Se $r = (r_1)$, então $\mathcal{L}(r) = (\mathcal{L}(r_1))$.	
+	\end{itemize}
+\end{definicao}
+
+
+\section{Coisa que não são expressões regulares!}
+
+Muitos ambientes de computação e linguagens de programação oferecem suporte a padrões chamados \textit{regex} que são consideravelmente mais gerais e poderosos do que as expressões regulares, vistas na seção anterior. Os \textit{regex} oferecidos por linguagens de programação incluem símbolos especiais que representam negação, classes de caracteres (por exemplo, letras maiúsculas ou dígitos), intervalos contíguos de caracteres, limites de linha e de palavra, repetição limitada\sidefootnote{Que ẽ algo oposto totalmente à repetição ilimitada (fecho de Kleene) permitida pelas expressões vistas aqui}, referências a subexpressões anteriores (back-references) e até variáveis locais. 
+
+Então resumidamente e de forma direta, apesar de sua etimologia óbvia, uma regex oferecida por uma linguagem de programação não é necessariamente uma expressão regular, e não necessariamente descreve uma linguagem regular\sidefootnote{Veja a discussão em \url{http://stackoverflow.com/a/1732454/775369}}.
+
+Outro tipo de padrão que frequentemente é confundido com expressões regulares são os \textit{globs}, que são padrões usados na maioria dos programas de \textit{shells} em  sistemas \textit{Unix-like} e em algumas linguagens de script para representar conjuntos de nomes de arquivos. \textit{Globs} incluem símbolos para caracteres arbitrários únicos (?), caracteres únicos de um intervalo específico ([a-z]), substrings arbitrárias (*) e substrings de um conjunto finito especificado ({foo,ba{r,z}}). \textit{Globs} são, na verdade, significativamente menos poderosos do que expressões regulares \cite{erickson2014}.
+
+
+
+
+
+
