@@ -328,7 +328,7 @@ No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, 
 
 A seguir será formalizado o conceito de semântica para as expressões regulares, sendo que tal semântica pode ser visto como uma \textbf{semântica denotacional}\sidefootnote{Aquela em que as valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}, que apresenta significado as operações de soma e multiplicação. Antes porém, vale ressaltar que, uma expressão regular não é, em geral, uma palavra de alguma linguagem sobre $\Sigma$.
 
-\ 
+O conceito de semântica para as expressões regulares (descrito a seguir), corresponde formalmente a ideia de uma \textbf{semântica denotacional}\footnote{Uma semântica denotacional é aquela em que as funções de valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}. Inicialmente, será apresentado tal ideia, seguido de alguns exemplo e, por fim, será descutido questões associadas a semântica.
 
 \begin{definicao}[Semântica das Expressão Regulares]\label{def:ExpRegularesSemantica}
 	Seja $Exp_\Sigma$ o conjunto das expressões regulares sobre $\Sigma$,  a semântica (ou interpretação) de $Exp_\Sigma$ é uma função $\mathcal{L}: Exp_\Sigma \rightarrow \wp(\Sigma^*)$ definida recursivamente para todo $r, r_1, r_2  \in Exp_\Sigma$ pelas seguintes regras.
@@ -342,6 +342,15 @@ A seguir será formalizado o conceito de semântica para as expressões regulare
 	\end{itemize}
 \end{definicao}
 
+\begin{exemplo}\label{exe:ValoracaoExpressao1}
+	Dado o alfabeto $\{0,1\}$ e $0^* \in Exp_\Sigma$ tem-se que:
+	\begin{eqnarray*}
+		\mathcal{L}(0^*) & = & (\mathcal{L}(0))^*\\
+		& = & (\{0\})^*\\
+		& = & \{\lambda, 00, 0000, 000000, 00000000, \cdots\}
+	\end{eqnarray*}
+	ou seja, a valoração da expressão regular $0^*$ consiste da linguagem de todas as palavras $w$ sobre o alfabeto $\{0,1\}$ sem nenhum 1.
+\end{exemplo}
 
 \section{Coisa que não são expressões regulares!}
 
